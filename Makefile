@@ -1,0 +1,2 @@
+init:
+	dep ensure -v
