@@ -32,3 +32,15 @@
 [[constraint]]
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   branch = "master"
+
+[[constraint]]
+  name = "github.com/sarulabs/di"
+  version = "v2.1.2"
+
+[[constraint]]
+  name = "github.com/stevenroose/gonfig"
+  vesion = "0.1.4"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.5"

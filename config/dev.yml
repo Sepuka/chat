@@ -1,0 +1,5 @@
+http:
+  proxy: http://3.212.104.192:3128
+
+telegram:
+  token: 631665349:AAFpTa6fo_lTdACNzk6RBxr3g56nab3ekDk

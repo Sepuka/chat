@@ -1,0 +1,5 @@
+http:
+  proxy: http://3.212.104.192:3128 //https://hidemyna.me/ru/proxy-list/?type=s#list
+
+telegram:
+  token:
