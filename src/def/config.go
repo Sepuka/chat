@@ -9,17 +9,18 @@ const CfgDef = "config"
 
 type (
 	httpClient struct {
-		Proxy string `id:"proxy"`
+		Proxy string
 	}
 
 	telegram struct {
-		Token string `id:"token"`
+		Token string
+		Debug bool `default:false`
 	}
 
 	Config struct {
-		Path string `id:"path"`
+		Path string
 		HttpClient httpClient `id:"http"`
-		Telegram telegram  `id:"telegram"`
+		Telegram telegram
 	}
 )
 

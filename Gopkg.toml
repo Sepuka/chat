@@ -39,7 +39,7 @@
 
 [[constraint]]
   name = "github.com/stevenroose/gonfig"
-  vesion = "0.1.4"
+  version = "0.1.4"
 
 [[constraint]]
   name = "github.com/spf13/cobra"

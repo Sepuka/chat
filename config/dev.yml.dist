@@ -3,3 +3,4 @@ http:
 
 telegram:
   token:
+  debug: true
