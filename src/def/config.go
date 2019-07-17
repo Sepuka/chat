@@ -17,10 +17,19 @@ type (
 		Debug bool `default:false`
 	}
 
+	database struct {
+		User string
+		Password string
+		Name string
+		Host string
+		Port int
+	}
+
 	Config struct {
 		Path string
 		HttpClient httpClient `id:"http"`
 		Telegram telegram
+		Database database
 	}
 )
 

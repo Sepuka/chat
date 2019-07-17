@@ -5,15 +5,16 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(helpCmd)
+	rootCmd.AddCommand(startCmd)
 }
 
 var (
-	helpCmd = &cobra.Command{
-		Use:     `help`,
-		Example: `help`,
+	startCmd = &cobra.Command{
+		Use:     `start`,
+		Example: `/start`,
 		Short:   `command invokes help tutorial`,
 		Long:    `
+list
 create [opts]
 delete [opts]
 `,

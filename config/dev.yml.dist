@@ -4,3 +4,10 @@ http:
 telegram:
   token:
   debug: true
+
+database:
+  name:
+  user:
+  password:
+  host: localhost
+  port: 1234
