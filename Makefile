@@ -12,8 +12,8 @@ init:
 build:
 	go build -o chat
 
-start: build
-	./chat telegram -c config/dev.yml
+repeater: build
+	./chat telegram repeater --mode=repeater -c config/dev.yml
 
 gen_tbl: build
 	./chat db generate -c config/dev.yml
