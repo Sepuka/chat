@@ -11,6 +11,6 @@ type Pool struct {
 	CreatedAt time.Time `sql:",notnull,default:now()"`
 	UpdatedAt time.Time `sql:",notnull,default:now()"`
 	DeletedAt time.Time `pg:",soft_delete"`
-	Active    bool      `sql:",notnull,default:0"`
+	Active    bool      `sql:",notnull,default:false"`
 	Workload  uint64    `sql:",notnull,default:0"`
 }

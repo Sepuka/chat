@@ -9,12 +9,12 @@ import (
 	httpClient "github.com/sepuka/chat/src/def/http"
 )
 
-const TelegramDef = "telegram"
+const BotDef = "telegram"
 
 func init() {
 	def.Register(func(builder *di.Builder, cfg def.Config) error {
 		return builder.Add(di.Def{
-			Name: TelegramDef,
+			Name: BotDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
 					client = ctx.Get(httpClient.ClientDef).(*http.Client)

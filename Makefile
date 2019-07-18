@@ -9,5 +9,11 @@ init:
 	dep ensure -v
 	cp -n $(CONFIG_PATH) config/dev.yml
 
-start:
-	go build -o chat && ./chat repeater -c config/dev.yml
+build:
+	go build -o chat
+
+start: build
+	./chat telegram -c config/dev.yml
+
+gen_tbl: build
+	./chat db generate -c config/dev.yml

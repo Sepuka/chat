@@ -47,4 +47,4 @@
 
 [[constraint]]
   name = "github.com/go-pg/pg"
-  branch = "master"
+  version = "v8.0.4"

@@ -1,8 +1,8 @@
 package db
 
 import (
-	"fmt"
 	"net"
+	"strconv"
 
 	"github.com/go-pg/pg"
 	"github.com/sarulabs/di"
@@ -17,14 +17,14 @@ func init() {
 			Name: DataBaseDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					db *pg.DB
+					db  *pg.DB
 					cfg = ctx.Get(def.CfgDef).(def.Config)
 				)
 
 				db = pg.Connect(&pg.Options{
 					User:     cfg.Database.User,
 					Password: cfg.Database.Password,
-					Addr:     net.JoinHostPort(cfg.Database.Host, fmt.Sprint(cfg.Database.Port)),
+					Addr:     net.JoinHostPort(cfg.Database.Host, strconv.Itoa(cfg.Database.Port)),
 					Database: cfg.Database.Name,
 				})
 
