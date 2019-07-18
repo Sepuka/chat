@@ -6,8 +6,8 @@ telegram:
   debug: true
 
 database:
-  name:
-  user:
-  password:
+  name: hosting
+  user: hostinguser
+  password: 1234
   host: localhost
-  port: 1234
+  port: 5432
