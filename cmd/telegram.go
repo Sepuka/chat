@@ -11,6 +11,11 @@ func init() {
 	rootCmd.AddCommand(telegramCmd)
 }
 
+const (
+	repeaterMode = `repeater`
+	hostingMode  = `hosting`
+)
+
 var (
 	mode = `repeater`
 
@@ -22,8 +27,10 @@ var (
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			switch mode {
-			case `repeater`:
+			case repeaterMode:
 				return telegram.Repeater()
+			case hostingMode:
+				return telegram.Hosting()
 			default:
 				return errors.New(`unknown mode`)
 			}

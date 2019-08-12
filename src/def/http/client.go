@@ -31,7 +31,9 @@ func init() {
 				}
 
 				client.Transport = transport
-				client.Timeout = time.Second * time.Duration(cfg.HttpClient.Timeout)
+				if cfg.HttpClient.Timeout > 0 {
+					client.Timeout = time.Second * time.Duration(cfg.HttpClient.Timeout)
+				}
 
 				return client, nil
 			},
