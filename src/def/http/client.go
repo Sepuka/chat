@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/src/def"
@@ -30,6 +31,7 @@ func init() {
 				}
 
 				client.Transport = transport
+				client.Timeout = time.Second * time.Duration(cfg.HttpClient.Timeout)
 
 				return client, nil
 			},

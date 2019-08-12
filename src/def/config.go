@@ -9,7 +9,8 @@ const CfgDef = "config"
 
 type (
 	httpClient struct {
-		Proxy string
+		Proxy   string
+		Timeout int64
 	}
 
 	telegram struct {
@@ -18,18 +19,18 @@ type (
 	}
 
 	database struct {
-		User string
+		User     string
 		Password string
-		Name string
-		Host string
-		Port int
+		Name     string
+		Host     string
+		Port     int
 	}
 
 	Config struct {
-		Path string
+		Path       string
 		HttpClient httpClient `id:"http"`
-		Telegram telegram
-		Database database
+		Telegram   telegram
+		Database   database
 	}
 )
 
