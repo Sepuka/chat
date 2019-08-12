@@ -13,7 +13,7 @@ build:
 	go build -o chat
 
 repeater: build
-	./chat telegram repeater --mode=repeater -c config/dev.yml
+	./chat telegram --mode=repeater -c config/dev.yml
 
 gen_tbl: build
 	./chat db generate -c config/dev.yml

@@ -16,15 +16,20 @@ func init() {
 			Name: ClientDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				client := &http.Client{}
-				var cfg = ctx.Get(def.CfgDef).(def.Config)
-				proxy, err := url.Parse(cfg.HttpClient.Proxy)
-				if err != nil {
-					return nil, err
+				var (
+					cfg       = ctx.Get(def.CfgDef).(def.Config)
+					transport = &http.Transport{}
+				)
+
+				if len(cfg.HttpClient.Proxy) > 0 {
+					proxy, err := url.Parse(cfg.HttpClient.Proxy)
+					if err != nil {
+						return nil, err
+					}
+					transport.Proxy = http.ProxyURL(proxy)
 				}
 
-				client.Transport = &http.Transport{
-					Proxy: http.ProxyURL(proxy),
-				}
+				client.Transport = transport
 
 				return client, nil
 			},
