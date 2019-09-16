@@ -20,3 +20,16 @@ hosting: build
 
 gen_tbl: build
 	./chat db generate -c config/dev.yml
+
+joomla_unpack:
+	rm -rf docker/tariff/joomla/web/src/*
+	unzip docker/tariff/joomla/web/Joomla_3.9.11-Stable-Full_Package.zip -d docker/tariff/joomla/web/src/
+
+joomla: joomla_unpack
+	cd docker/tariff/joomla && docker-compose up --build
+
+stop_all:
+	docker stop $(docker ps -a -q);
+	docker rm $(docker ps -a -q);
+	docker rmi $(docker images -q);
+	docker volume rm $(docker volume ls -q)

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./container/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - "./web/src:/var/www/joomla/"
+    ports:
+      - "80"
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./container/php
+      dockerfile: Dockerfile
+    volumes:
+      - "./web/src:/var/www/joomla/"
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: ./container/db
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_DATABASE: "joomla"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
