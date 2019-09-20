@@ -23,7 +23,7 @@ gen_tbl: build
 
 joomla_unpack:
 	rm -rf docker/tariff/joomla/web/src/*
-	unzip docker/tariff/joomla/web/Joomla_3.9.11-Stable-Full_Package.zip -d docker/tariff/joomla/web/src/
+	unzip -q docker/tariff/joomla/web/Joomla_3.9.11-Stable-Full_Package.zip -d docker/tariff/joomla/web/src/
 
 joomla: joomla_unpack
 	cd docker/tariff/joomla && docker-compose up --build

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   nginx:
     build:
@@ -29,3 +29,13 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  host:
+    container_name: my-host-container
+    build:
+      context: ./container/host
+      dockerfile: Dockerfile
+      args:
+        SSH_ROOT_PASS: secret
+    ports:
+      - "22"
