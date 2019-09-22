@@ -23,10 +23,13 @@ gen_tbl: build
 
 joomla_unpack:
 	rm -rf docker/tariff/joomla/web/src/*
-	unzip -q docker/tariff/joomla/web/Joomla_3.9.11-Stable-Full_Package.zip -d docker/tariff/joomla/web/src/
+	unzip -qq docker/tariff/joomla/web/Joomla_3.9.11-Stable-Full_Package.zip -d /tmp/${project}
 
+# usage: make joomla project=vasya (where vasya is user's nickname)
 joomla: joomla_unpack
-	cd docker/tariff/joomla && docker-compose up --build
+	cd docker/tariff/joomla && \
+	export PROJECT=${project} && \
+	docker-compose up --build
 
 stop_all:
 	docker stop $(docker ps -a -q);

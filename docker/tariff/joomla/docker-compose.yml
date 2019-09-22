@@ -1,29 +1,35 @@
 version: '3.7'
 services:
   nginx:
+    container_name: "${PROJECT}_nginx"
     build:
       context: ./container/nginx
       dockerfile: Dockerfile
+    restart: on-failure
     volumes:
-      - "./web/src:/var/www/joomla/"
+      - "/tmp/$PROJECT:/var/www/joomla/"
     ports:
       - "80"
     depends_on:
       - php-fpm
 
   php-fpm:
+    container_name: "${PROJECT}_php"
     build:
       context: ./container/php
       dockerfile: Dockerfile
+    restart: on-failure
     volumes:
-      - "./web/src:/var/www/joomla/"
+      - "/tmp/$PROJECT:/var/www/joomla/"
     depends_on:
       - db
 
   db:
+    container_name: "${PROJECT}_db"
     build:
       context: ./container/db
       dockerfile: Dockerfile
+    restart: on-failure
     environment:
       MYSQL_DATABASE: "joomla"
       MYSQL_USER: "root"
@@ -31,11 +37,13 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
   host:
-    container_name: my-host-container
+    container_name: "${PROJECT}_host"
     build:
       context: ./container/host
       dockerfile: Dockerfile
       args:
         SSH_ROOT_PASS: secret
+    volumes:
+      - "/tmp/$PROJECT:/var/www/joomla/"
     ports:
       - "22"
