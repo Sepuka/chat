@@ -19,6 +19,9 @@ COPY sshd_config /etc/ssh/sshd_config
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+COPY Joomla_3.9.11-Stable-Full_Package.zip /var/www/joomla.zip
+RUN unzip /var/www/joomla.zip -d /var/www/joomla
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD tail -f /dev/null
