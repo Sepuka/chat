@@ -8,10 +8,11 @@ RUN apt-get update \
     sudo \
     openssh-server
 
-COPY user.sh /usr/local/bin/user.sh
-RUN chmod +x /usr/local/bin/user.sh
-RUN sed -i 's/{secret}/$SSH_ROOT_PASS/' /usr/local/bin/user.sh
-RUN /usr/local/bin/user.sh
+RUN apt-get install -y mysql-server
+RUN apt-get install -y nginx
+ADD mysqld.conf /etc/mysql/my.cnf
+
+COPY joomla.nginx.conf /etc/nginx/sites-available/default
 
 COPY sshd_config /etc/ssh/sshd_config
 
