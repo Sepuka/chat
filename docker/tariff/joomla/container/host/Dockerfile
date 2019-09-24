@@ -7,7 +7,7 @@ RUN apt-get update \
     vim \
     sudo \
     unzip \
-    php7.1-fpm \
+    php7.2-fpm \
     openssh-server
 
 RUN apt-get install -y mysql-server
