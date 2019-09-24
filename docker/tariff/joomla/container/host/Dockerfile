@@ -6,6 +6,8 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     vim \
     sudo \
+    unzip \
+    php7.1-fpm \
     openssh-server
 
 RUN apt-get install -y mysql-server
@@ -21,6 +23,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 COPY Joomla_3.9.11-Stable-Full_Package.zip /var/www/joomla.zip
 RUN unzip /var/www/joomla.zip -d /var/www/joomla
+RUN rm -rf /var/www/joomla.zip
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
