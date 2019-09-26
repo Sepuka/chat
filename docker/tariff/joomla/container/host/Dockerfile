@@ -22,9 +22,9 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 COPY Joomla_3.9.11-Stable-Full_Package.zip /var/www/joomla.zip
-RUN unzip /var/www/joomla.zip -d /var/www/joomla
+RUN unzip -qq /var/www/joomla.zip -d /var/www/joomla
 RUN rm -rf /var/www/joomla.zip
-
+RUN chown -R mysql:mysql /var/lib/mysql
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD tail -f /dev/null
