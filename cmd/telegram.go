@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"errors"
-
-	"github.com/sepuka/chat/src/telegram"
+	"chat/src/def"
+	"chat/src/def/source"
 	"github.com/spf13/cobra"
 )
 
@@ -11,14 +10,7 @@ func init() {
 	rootCmd.AddCommand(telegramCmd)
 }
 
-const (
-	repeaterMode = `repeater`
-	hostingMode  = `hosting`
-)
-
 var (
-	mode = `repeater`
-
 	telegramCmd = &cobra.Command{
 		Use:     `telegram`,
 		Example: `telegram -c /config/path`,
@@ -26,19 +18,12 @@ var (
 		Long:    `Manages hosting staff via telegram`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			switch mode {
-			case repeaterMode:
-				return telegram.Repeater()
-			case hostingMode:
-				return telegram.Hosting()
-			default:
-				return errors.New(`unknown mode`)
+			commandSourceListener, err := def.Container.SafeGet(source.TelegramDef)
+			if err != nil {
+				return err
 			}
 
+			return commandSourceListener.(source.Listener).Listen()
 		},
 	}
 )
-
-func init() {
-	telegramCmd.Flags().StringVar(&mode, "mode", "", "--mode=repeater")
-}

@@ -34,3 +34,21 @@ func Build(params Config) error {
 
 	return nil
 }
+
+func GetByTag(tag string) []interface{} {
+	var defs []interface{}
+
+	for _, def := range Container.Definitions() {
+		for _, defTag := range def.Tags {
+			if defTag.Name == tag {
+				var content interface{}
+				if err := Container.Fill(def.Name, &content); err != nil {
+					panic(err)
+				}
+				defs = append(defs, content)
+			}
+		}
+	}
+
+	return defs
+}

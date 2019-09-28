@@ -1,0 +1,61 @@
+package source
+
+import (
+	"chat/src/command"
+	"chat/src/domain"
+	"fmt"
+	"log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+)
+
+type Telegram struct {
+	commands map[string]command.Executor
+	bot      *tgbotapi.BotAPI
+}
+
+func NewTelegram(
+	commandsMap map[string]command.Executor,
+	bot *tgbotapi.BotAPI,
+) *Telegram {
+	return &Telegram{
+		commands: commandsMap,
+		bot:      bot,
+	}
+}
+
+func (hosting *Telegram) Listen() error {
+	var (
+		msg tgbotapi.MessageConfig
+	)
+
+	log.Printf("Authorized on account %s", hosting.bot.Self.UserName)
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 30
+
+	updates, _ := hosting.bot.GetUpdatesChan(u)
+
+	for update := range updates {
+		if update.Message == nil { // ignore any non-Message Updates
+			continue
+		}
+
+		if f, ok := hosting.commands[update.Message.Text]; ok {
+			f.Exec()
+		}
+
+		cmd, err := domain.NewCommand(update.Message.Text)
+		if err != nil {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+		} else {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(`command '%s' accepted`, cmd))
+		}
+
+		msg.ReplyToMessageID = update.Message.MessageID
+
+		hosting.bot.Send(msg)
+	}
+
+	return nil
+}

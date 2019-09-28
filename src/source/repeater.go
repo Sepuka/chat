@@ -1,20 +1,15 @@
-package telegram
+package source
 
 import (
-	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sepuka/chat/src/def"
 	"github.com/sepuka/chat/src/def/telegram"
-	"github.com/sepuka/chat/src/domain"
 )
 
-func Hosting() error {
-	var (
-		bot *tgbotapi.BotAPI
-		msg tgbotapi.MessageConfig
-	)
+func Repeater() error {
+	var bot *tgbotapi.BotAPI
 	if err := def.Container.Fill(telegram.BotDef, &bot); err != nil {
 		return err
 	}
@@ -22,7 +17,7 @@ func Hosting() error {
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 30
+	u.Timeout = 60
 
 	updates, _ := bot.GetUpdatesChan(u)
 
@@ -31,13 +26,9 @@ func Hosting() error {
 			continue
 		}
 
-		cmd, err := domain.NewCommand(update.Message.Text)
-		if err != nil {
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
-		} else {
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(`command '%s' accepted`, cmd))
-		}
+		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		msg.ReplyToMessageID = update.Message.MessageID
 
 		bot.Send(msg)

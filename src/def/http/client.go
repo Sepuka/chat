@@ -1,12 +1,12 @@
 package http
 
 import (
+	"chat/src/def"
 	"net/http"
 	"net/url"
 	"time"
 
 	"github.com/sarulabs/di"
-	"github.com/sepuka/chat/src/def"
 )
 
 const ClientDef = "http.client"

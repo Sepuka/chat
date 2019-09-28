@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sepuka/chat/cmd"
+	"chat/cmd"
 )
 
 func main() {
