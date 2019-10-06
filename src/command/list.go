@@ -12,8 +12,9 @@ func NewList(precept string) *list {
 	}
 }
 
-func (l *list) Exec() {
+func (l *list) Exec() error {
 	fmt.Println(`list!`)
+	return nil
 }
 
 func (c *list) Precept() string {

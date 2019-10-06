@@ -1,7 +1,7 @@
 package command
 
 type Executor interface {
-	Exec()
+	Exec() error
 }
 
 type Preceptable interface {

@@ -12,11 +12,11 @@ init:
 build:
 	go build -o chat
 
-repeater: build
-	./chat telegram --mode=repeater -c config/dev.yml
-
-hosting: build
+telegram: build
 	./chat telegram -c config/dev.yml
+
+terminal: build
+	./chat terminal ${instr} -c config/dev.yml
 
 gen_tbl: build
 	./chat db generate -c config/dev.yml

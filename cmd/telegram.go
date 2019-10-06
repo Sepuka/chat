@@ -3,6 +3,7 @@ package cmd
 import (
 	"chat/src/def"
 	"chat/src/def/source"
+	commandSource "chat/src/source"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,7 @@ var (
 				return err
 			}
 
-			return commandSourceListener.(source.Listener).Listen()
+			return commandSourceListener.(*commandSource.Telegram).Listen()
 		},
 	}
 )

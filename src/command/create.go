@@ -12,8 +12,9 @@ func NewCreate(precept string) *create {
 	}
 }
 
-func (c *create) Exec() {
+func (c *create) Exec() error {
 	fmt.Println(`create!`)
+	return nil
 }
 
 func (c *create) Precept() string {
