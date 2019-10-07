@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+type ClientRepository interface {
+	GetByLogin(string) (*Client, error)
+}
+
 type Client struct {
 	Id        uint64    `sql:",pk"`
 	Login     string    `sql:",unique,notnull"`

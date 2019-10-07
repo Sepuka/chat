@@ -1,15 +1,15 @@
 package db
 
 import (
+	"chat/src/def"
 	"net"
 	"strconv"
 
 	"github.com/go-pg/pg"
 	"github.com/sarulabs/di"
-	"github.com/sepuka/chat/src/def"
 )
 
-const DataBaseDef = "db"
+const DataBaseDef = "db.def"
 
 func init() {
 	def.Register(func(builder *di.Builder, cfg def.Config) error {
@@ -28,7 +28,7 @@ func init() {
 					Database: cfg.Database.Name,
 				})
 
-				_, err := db.Exec("SET timezone TO 'UTC'")
+				_, err := db.Exec(`SET timezone TO 'UTC'`)
 
 				return db, err
 			},

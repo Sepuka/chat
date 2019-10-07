@@ -2,33 +2,33 @@ package source
 
 import (
 	"chat/src/command"
+	"chat/src/context"
+	"chat/src/domain"
 	"errors"
 )
 
 var (
-	emptyInstruction = errors.New(`got empty instruction`)
 	unknownInstruction = errors.New(`got unknown instruction`)
 )
 
 type Terminal struct {
-	commands map[string]command.Executor
+	commands   map[string]command.Executor
+	clientRepo domain.ClientRepository
 }
 
 func NewTerminal(
 	commandsMap map[string]command.Executor,
+	clientRepo domain.ClientRepository,
 ) *Terminal {
 	return &Terminal{
-		commands: commandsMap,
+		commands:   commandsMap,
+		clientRepo: clientRepo,
 	}
 }
 
-func (hosting *Terminal) Execute(args []string) error {
-	if len(args) == 0 {
-		return emptyInstruction
-	}
-	instr := args[0]
-	if f, ok := hosting.commands[instr]; ok {
-		return f.Exec()
+func (src *Terminal) Execute(req *context.Request) error {
+	if f, ok := src.commands[req.Command]; ok {
+		return f.Exec(req)
 	}
 
 	return unknownInstruction

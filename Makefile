@@ -18,6 +18,10 @@ telegram: build
 terminal: build
 	./chat terminal ${instr} -c config/dev.yml
 
+db:
+	docker build -t hosting_db docker/parts/pg/
+	docker run -p 5433:5432 hosting_db
+
 gen_tbl: build
 	./chat db generate -c config/dev.yml
 

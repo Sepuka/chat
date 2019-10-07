@@ -2,6 +2,7 @@ package source
 
 import (
 	"chat/src/command"
+	"chat/src/context"
 	"chat/src/domain"
 	"fmt"
 	"log"
@@ -41,8 +42,9 @@ func (hosting *Telegram) Listen() error {
 			continue
 		}
 
+		req := context.NewRequest(update.Message.From.UserName, update.Message.Text)
 		if f, ok := hosting.commands[update.Message.Text]; ok {
-			f.Exec()
+			f.Exec(req)
 		}
 
 		cmd, err := domain.NewCommand(update.Message.Text)

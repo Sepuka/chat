@@ -1,6 +1,9 @@
 package command
 
-import "fmt"
+import (
+	"chat/src/context"
+	"fmt"
+)
 
 type list struct {
 	precept string
@@ -12,7 +15,7 @@ func NewList(precept string) *list {
 	}
 }
 
-func (l *list) Exec() error {
+func (l *list) Exec(req *context.Request) error {
 	fmt.Println(`list!`)
 	return nil
 }

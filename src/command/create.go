@@ -1,6 +1,9 @@
 package command
 
-import "fmt"
+import (
+	"chat/src/context"
+	"fmt"
+)
 
 type create struct {
 	precept string
@@ -12,7 +15,7 @@ func NewCreate(precept string) *create {
 	}
 }
 
-func (c *create) Exec() error {
+func (c *create) Exec(req *context.Request) error {
 	fmt.Println(`create!`)
 	return nil
 }

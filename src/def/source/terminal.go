@@ -3,6 +3,8 @@ package source
 import (
 	"chat/src/command"
 	"chat/src/def"
+	"chat/src/def/repository"
+	"chat/src/domain"
 	"chat/src/source"
 	"github.com/sarulabs/di"
 )
@@ -19,6 +21,7 @@ func init() {
 				var (
 					handlers   = def.GetByTag(CommandTagName)
 					handlerMap = make(map[string]command.Executor, len(handlers))
+					clientRepo = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
 				)
 
 				for _, cmd := range handlers {
@@ -26,7 +29,7 @@ func init() {
 					handlerMap[precept.Precept()] = cmd.(command.Executor)
 				}
 
-				return source.NewTerminal(handlerMap), nil
+				return source.NewTerminal(handlerMap, clientRepo), nil
 			},
 		})
 	})
