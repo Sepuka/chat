@@ -3,7 +3,9 @@ package command
 import (
 	"chat/src/command"
 	"chat/src/def"
+	"chat/src/def/repository"
 	"chat/src/def/source"
+	"chat/src/domain"
 	"github.com/sarulabs/di"
 )
 
@@ -23,7 +25,10 @@ func init() {
 				},
 			},
 			Build: func(ctx def.Context) (interface{}, error) {
-				return command.NewList(listPrecept), nil
+				var (
+					clientRepo = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
+				)
+				return command.NewList(listPrecept, clientRepo), nil
 			},
 		})
 	})

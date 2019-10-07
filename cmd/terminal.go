@@ -9,15 +9,16 @@ import (
 )
 
 func init() {
-	terminalCmd.PersistentFlags().StringVar(&login, `login`, ``, `user's login'`)
+	terminalCmd.Flags().StringVarP(&user, `user`, `u`, ``, `user's nickname'`)
+	_ = terminalCmd.MarkFlagRequired(`user`)
 	rootCmd.AddCommand(terminalCmd)
 }
 
 var (
-	login       string
-	terminalCmd = &cobra.Command{
+	user        string
+	terminalCmd  = &cobra.Command{
 		Use:     `terminal`,
-		Example: `terminal -c /config/path [list|create]`,
+		Example: `terminal instr=list -c /config/path -u vasya`,
 		Short:   `hosting terminal controller`,
 		Long:    `Manages hosting staff via terminal`,
 		Args:    cobra.MinimumNArgs(1),
@@ -27,7 +28,7 @@ var (
 				return err
 			}
 
-			req := context.NewRequest(login, args[0], args[1:]...)
+			req := context.NewRequest(user, args[0], args[1:]...)
 
 			return commandSourceListener.(*commandSource.Terminal).Execute(req)
 		},

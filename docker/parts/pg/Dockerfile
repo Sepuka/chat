@@ -1,3 +1,3 @@
-FROM postgres:latest
+FROM postgres:11.5
 ENV POSTGRES_PASSWORD 1234
 ENV POSTGRES_USER hosting

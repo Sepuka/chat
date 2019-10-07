@@ -16,11 +16,14 @@ telegram: build
 	./chat telegram -c config/dev.yml
 
 terminal: build
-	./chat terminal ${instr} -c config/dev.yml
+	./chat terminal ${instr} -c config/dev.yml -u ${user}
 
 db:
 	docker build -t hosting_db docker/parts/pg/
 	docker run -p 5433:5432 hosting_db
+
+pgdump:
+	PGPASSWORD="1234" pg_dump -h localhost -p 5433 -U hosting -f docker/parts/pg/dump.sql hosting
 
 gen_tbl: build
 	./chat db generate -c config/dev.yml

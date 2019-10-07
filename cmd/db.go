@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"chat/src/def"
+	db2 "chat/src/def/db"
+	"chat/src/domain"
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
-	"github.com/sepuka/chat/src/def"
-	dbDef "github.com/sepuka/chat/src/def/db"
-	"github.com/sepuka/chat/src/domain"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ var (
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var db *pg.DB
-			if err := def.Container.Fill(dbDef.DataBaseDef, &db); err != nil {
+			if err := def.Container.Fill(db2.DataBaseDef, &db); err != nil {
 				return err
 			}
 
