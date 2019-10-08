@@ -3,9 +3,11 @@ package cmd
 import (
 	"chat/src/context"
 	"chat/src/def"
+	"chat/src/def/log"
 	"chat/src/def/source"
 	commandSource "chat/src/source"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -16,7 +18,7 @@ func init() {
 
 var (
 	user        string
-	terminalCmd  = &cobra.Command{
+	terminalCmd = &cobra.Command{
 		Use:     `terminal`,
 		Example: `terminal instr=list -c /config/path -u vasya`,
 		Short:   `hosting terminal controller`,
@@ -28,7 +30,16 @@ var (
 				return err
 			}
 
+			logger := def.Container.Get(log.LoggerDef)
 			req := context.NewRequest(user, args[0], args[1:]...)
+			logger.
+			(*zap.SugaredLogger).
+				Debug(
+					`got terminal command`,
+					zap.String(`user`, req.GetLogin()),
+					zap.String(`command`, req.GetCommand()),
+					zap.Strings(`args`, req.GetArgs()),
+				)
 
 			return commandSourceListener.(*commandSource.Terminal).Execute(req)
 		},

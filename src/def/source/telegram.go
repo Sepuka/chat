@@ -4,10 +4,12 @@ import (
 	"chat/src/command"
 	"chat/src/def"
 	httpClient "chat/src/def/http"
+	"chat/src/def/log"
 	"chat/src/source"
 	"errors"
 	"fmt"
 	"github.com/sarulabs/di"
+	"go.uber.org/zap"
 	"net/http"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -49,6 +51,7 @@ func init() {
 					handlers   = def.GetByTag(CommandTagName)
 					handlerMap = make(map[string]command.Executor, len(handlers))
 					bot        = ctx.Get(BotDef).(*tgbotapi.BotAPI)
+					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
 				)
 
 				for _, cmd := range handlers {
@@ -56,7 +59,7 @@ func init() {
 					handlerMap[precept.Precept()] = cmd.(command.Executor)
 				}
 
-				return source.NewTelegram(handlerMap, bot), nil
+				return source.NewTelegram(handlerMap, bot, logger), nil
 			},
 		})
 	})

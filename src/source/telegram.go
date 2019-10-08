@@ -5,6 +5,7 @@ import (
 	"chat/src/context"
 	"chat/src/domain"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -13,15 +14,18 @@ import (
 type Telegram struct {
 	commands map[string]command.Executor
 	bot      *tgbotapi.BotAPI
+	logger   *zap.SugaredLogger
 }
 
 func NewTelegram(
 	commandsMap map[string]command.Executor,
 	bot *tgbotapi.BotAPI,
+	logger *zap.SugaredLogger,
 ) *Telegram {
 	return &Telegram{
 		commands: commandsMap,
 		bot:      bot,
+		logger:   logger,
 	}
 }
 
@@ -43,6 +47,14 @@ func (hosting *Telegram) Listen() error {
 		}
 
 		req := context.NewRequest(update.Message.From.UserName, update.Message.Text)
+		hosting.logger.
+			Debug(
+				`got terminal command`,
+				zap.String(`user`, req.GetLogin()),
+				zap.String(`command`, req.GetCommand()),
+				zap.Strings(`args`, req.GetArgs()),
+			)
+
 		if f, ok := hosting.commands[update.Message.Text]; ok {
 			f.Exec(req)
 		}

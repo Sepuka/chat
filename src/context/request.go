@@ -25,3 +25,7 @@ func (r *Request) GetLogin() string {
 func (r *Request) GetCommand() string {
 	return r.command
 }
+
+func (r *Request) GetArgs() []string {
+	return r.args
+}

@@ -26,11 +26,16 @@ type (
 		Port     int
 	}
 
+	log struct {
+		Prod bool
+	}
+
 	Config struct {
 		Path       string
 		HttpClient httpClient `id:"http"`
 		Telegram   telegram
 		Database   database
+		Log        log
 	}
 )
 

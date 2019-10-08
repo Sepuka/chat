@@ -48,3 +48,7 @@
 [[constraint]]
   name = "github.com/go-pg/pg"
   version = "v8.0.6"
+
+[[constraint]]
+  name = "go.uber.org/zap"
+  version = "1.10.0"
