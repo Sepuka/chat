@@ -23,7 +23,7 @@ func NewList(
 }
 
 func (l *List) Exec(req *context.Request) error {
-	client, err := l.getClient(req.Login)
+	client, err := l.getClient(req.GetLogin())
 	if err != nil {
 		return err
 	}

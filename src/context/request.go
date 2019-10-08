@@ -1,9 +1,9 @@
 package context
 
 type Request struct {
-	Login   string
-	Command string
-	Args    []string
+	login   string
+	command string
+	args    []string
 }
 
 func NewRequest(
@@ -12,8 +12,16 @@ func NewRequest(
 	args ...string,
 ) *Request {
 	return &Request{
-		Login:   login,
-		Command: command,
-		Args:    args,
+		login:   login,
+		command: command,
+		args:    args,
 	}
+}
+
+func (r *Request) GetLogin() string {
+	return r.login
+}
+
+func (r *Request) GetCommand() string {
+	return r.command
 }

@@ -27,7 +27,7 @@ func NewTerminal(
 }
 
 func (src *Terminal) Execute(req *context.Request) error {
-	if f, ok := src.commands[req.Command]; ok {
+	if f, ok := src.commands[req.GetCommand()]; ok {
 		return f.Exec(req)
 	}
 
