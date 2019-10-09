@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type PoolRepository interface {
+	GetFreePool() (*Pool, error)
+}
+
 type Pool struct {
 	Id        uint64    `sql:",pk"`
 	Address   net.IP    `sql:",notnull"`

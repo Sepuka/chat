@@ -48,8 +48,8 @@ func (hosting *Telegram) Listen() error {
 
 		req := context.NewRequest(update.Message.From.UserName, update.Message.Text)
 		hosting.logger.
-			Debug(
-				`got terminal command`,
+			Info(
+				`got telegram command`,
 				zap.String(`user`, req.GetLogin()),
 				zap.String(`command`, req.GetCommand()),
 				zap.Strings(`args`, req.GetArgs()),

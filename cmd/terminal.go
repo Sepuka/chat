@@ -34,7 +34,7 @@ var (
 			req := context.NewRequest(user, args[0], args[1:]...)
 			logger.
 			(*zap.SugaredLogger).
-				Debug(
+				Info(
 					`got terminal command`,
 					zap.String(`user`, req.GetLogin()),
 					zap.String(`command`, req.GetCommand()),

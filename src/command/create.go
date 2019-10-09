@@ -2,21 +2,40 @@ package command
 
 import (
 	"chat/src/context"
-	"fmt"
+	"chat/src/domain"
+	"errors"
+	"github.com/go-pg/pg"
+	"go.uber.org/zap"
 )
+
+var FreePoolIsAbsent = errors.New(`free pools is absent`)
 
 type create struct {
 	precept string
+	pool    domain.PoolRepository
+	logger  *zap.SugaredLogger
 }
 
-func NewCreate(precept string) *create {
+func NewCreate(
+	precept string,
+	pool domain.PoolRepository,
+	logger *zap.SugaredLogger,
+) *create {
 	return &create{
-		precept:precept,
+		precept: precept,
+		pool:    pool,
+		logger:  logger,
 	}
 }
 
 func (c *create) Exec(req *context.Request) error {
-	fmt.Println(`create!`)
+	if _, err := c.pool.GetFreePool(); err != nil {
+		if err == pg.ErrNoRows {
+			c.logger.Error(`Unable to find any vacant pool`)
+			return FreePoolIsAbsent
+		}
+	}
+
 	return nil
 }
 
