@@ -1,3 +1,5 @@
+[![Build Status](https://semaphoreci.com/api/v1/projects/88c89deb-b948-4680-bad2-15d90350f678/2964130/badge.svg)](https://semaphoreci.com/sepuka-42/chat)
+
 init
 ====
 ```bash
