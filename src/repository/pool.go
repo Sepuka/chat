@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"chat/src/domain"
 	"github.com/go-pg/pg"
+	"github.com/sepuka/chat/src/domain"
 )
 
 type PoolRepository struct {

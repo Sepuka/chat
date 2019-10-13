@@ -1,9 +1,9 @@
 package log
 
 import (
-	"chat/src/def"
 	"errors"
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/src/def"
 	"go.uber.org/zap"
 )
 

@@ -1,14 +1,14 @@
 package source
 
 import (
-	"chat/src/command"
-	"chat/src/def"
-	httpClient "chat/src/def/http"
-	"chat/src/def/log"
-	"chat/src/source"
 	"errors"
 	"fmt"
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/src/command"
+	"github.com/sepuka/chat/src/def"
+	httpClient "github.com/sepuka/chat/src/def/http"
+	"github.com/sepuka/chat/src/def/log"
+	"github.com/sepuka/chat/src/source"
 	"go.uber.org/zap"
 	"net/http"
 

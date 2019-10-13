@@ -1,11 +1,11 @@
 package command
 
 import (
-	"chat/src/command"
-	"chat/src/def"
-	"chat/src/def/repository"
-	"chat/src/def/source"
-	"chat/src/domain"
+	"github.com/sepuka/chat/src/command"
+	"github.com/sepuka/chat/src/def"
+	"github.com/sepuka/chat/src/def/repository"
+	"github.com/sepuka/chat/src/def/source"
+	"github.com/sepuka/chat/src/domain"
 	"github.com/sarulabs/di"
 )
 

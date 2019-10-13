@@ -1,7 +1,7 @@
 package http
 
 import (
-	"chat/src/def"
+	"github.com/sepuka/chat/src/def"
 	"net/http"
 	"net/url"
 	"time"

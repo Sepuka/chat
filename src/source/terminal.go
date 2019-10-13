@@ -1,10 +1,10 @@
 package source
 
 import (
-	"chat/src/command"
-	"chat/src/context"
-	"chat/src/domain"
 	"errors"
+	"github.com/sepuka/chat/src/command"
+	"github.com/sepuka/chat/src/context"
+	"github.com/sepuka/chat/src/domain"
 )
 
 var (

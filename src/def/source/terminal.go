@@ -1,12 +1,12 @@
 package source
 
 import (
-	"chat/src/command"
-	"chat/src/def"
-	"chat/src/def/repository"
-	"chat/src/domain"
-	"chat/src/source"
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/src/command"
+	"github.com/sepuka/chat/src/def"
+	"github.com/sepuka/chat/src/def/repository"
+	"github.com/sepuka/chat/src/domain"
+	"github.com/sepuka/chat/src/source"
 )
 
 const (

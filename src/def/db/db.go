@@ -1,7 +1,7 @@
 package db
 
 import (
-	"chat/src/def"
+	"github.com/sepuka/chat/src/def"
 	"net"
 	"strconv"
 

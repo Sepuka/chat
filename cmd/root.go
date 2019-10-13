@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"chat/src/def"
+	"github.com/sepuka/chat/src/def"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	_ "chat/src/def/command"
+	_ "github.com/sepuka/chat/src/def/command"
 )
 
 var (

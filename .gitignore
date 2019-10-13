@@ -2,3 +2,5 @@
 Gopkg.lock
 vendor/
 config/dev.yml
+*.DS_Store
+chat

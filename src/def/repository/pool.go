@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"chat/src/def"
-	dbDef "chat/src/def/db"
-	"chat/src/repository"
 	"github.com/go-pg/pg"
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/src/def"
+	dbDef "github.com/sepuka/chat/src/def/db"
+	"github.com/sepuka/chat/src/repository"
 )
 
 const PoolRepoDef = `repo.pool.def`

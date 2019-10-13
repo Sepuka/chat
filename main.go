@@ -1,8 +1,6 @@
 package main
 
-import (
-	"chat/cmd"
-)
+import "github.com/sepuka/chat/cmd"
 
 func main() {
 	cmd.Execute()

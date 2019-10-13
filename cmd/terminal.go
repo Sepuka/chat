@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"chat/src/context"
-	"chat/src/def"
-	"chat/src/def/log"
-	"chat/src/def/source"
-	commandSource "chat/src/source"
+	"github.com/sepuka/chat/src/context"
+	"github.com/sepuka/chat/src/def"
+	"github.com/sepuka/chat/src/def/log"
+	"github.com/sepuka/chat/src/def/source"
+	commandSource "github.com/sepuka/chat/src/source"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )

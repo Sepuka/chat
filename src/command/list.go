@@ -1,8 +1,8 @@
 package command
 
 import (
-	"chat/src/context"
-	"chat/src/domain"
+	"github.com/sepuka/chat/src/context"
+	"github.com/sepuka/chat/src/domain"
 	"fmt"
 	"github.com/go-pg/pg"
 )

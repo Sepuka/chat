@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"chat/src/def"
-	db2 "chat/src/def/db"
-	"chat/src/domain"
+	"github.com/sepuka/chat/src/def"
+	db2 "github.com/sepuka/chat/src/def/db"
+	"github.com/sepuka/chat/src/domain"
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 	"github.com/spf13/cobra"
