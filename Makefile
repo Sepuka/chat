@@ -1,4 +1,5 @@
 CONFIG_PATH=config/dev.yml.dist
+PROGRAM_NAME=hosting
 
 init:
 	dep ensure -v
@@ -9,7 +10,7 @@ dependencies:
 	dep ensure
 
 build:
-	go build -o chat
+	go build -o $(PROGRAM_NAME)
 
 telegram: build
 	./chat telegram -c config/dev.yml
