@@ -10,7 +10,6 @@ const CfgDef = "config"
 type (
 	httpClient struct {
 		Proxy   string
-		Timeout int64
 	}
 
 	telegram struct {

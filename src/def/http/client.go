@@ -1,12 +1,10 @@
 package http
 
 import (
+	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/src/def"
 	"net/http"
 	"net/url"
-	"time"
-
-	"github.com/sarulabs/di"
 )
 
 const ClientDef = "http.client"
@@ -31,9 +29,6 @@ func init() {
 				}
 
 				client.Transport = transport
-				if cfg.HttpClient.Timeout > 0 {
-					client.Timeout = time.Second * time.Duration(cfg.HttpClient.Timeout)
-				}
 
 				return client, nil
 			},
