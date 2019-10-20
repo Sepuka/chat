@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/sepuka/chat/internal/config"
+
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/def"
@@ -23,13 +25,12 @@ const (
 )
 
 func init() {
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: BotDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
 					client = ctx.Get(httpClient.ClientDef).(*http.Client)
-					cfg    = ctx.Get(def.CfgDef).(def.Config)
 				)
 
 				bot, err := tgbotapi.NewBotAPIWithClient(cfg.Telegram.Token, client)
@@ -44,7 +45,7 @@ func init() {
 		})
 	})
 
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: TelegramDef,
 			Build: func(ctx def.Context) (interface{}, error) {

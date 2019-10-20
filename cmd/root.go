@@ -19,10 +19,7 @@ var (
 		Short: "Test telegram chat",
 		Args:  cobra.MinimumNArgs(1),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			cfg := def.Config{}
-			cfg.Path = configFile
-
-			return def.Build(cfg)
+			return def.Build(configFile)
 		},
 	}
 )

@@ -3,6 +3,7 @@ package source
 import (
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/config"
 	"github.com/sepuka/chat/internal/def"
 	"github.com/sepuka/chat/internal/def/repository"
 	"github.com/sepuka/chat/internal/domain"
@@ -14,7 +15,7 @@ const (
 )
 
 func init() {
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: TerminalDef,
 			Build: func(ctx def.Context) (interface{}, error) {

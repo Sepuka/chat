@@ -3,6 +3,8 @@ package log
 import (
 	"errors"
 
+	"github.com/sepuka/chat/internal/config"
+
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/internal/def"
 	"go.uber.org/zap"
@@ -11,7 +13,7 @@ import (
 const LoggerDef = `logger.def`
 
 func init() {
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: LoggerDef,
 			Build: func(ctx def.Context) (interface{}, error) {
@@ -19,12 +21,17 @@ func init() {
 					logger *zap.Logger
 					sugar  *zap.SugaredLogger
 					err    error
+					zapCfg zap.Config
 				)
 
 				if cfg.Log.Prod {
-					logger, err = zap.NewProduction()
+					zapCfg = zap.NewProductionConfig()
+				} else {
+					zapCfg = zap.NewDevelopmentConfig()
 				}
-				if logger, err = zap.NewDevelopment(); err != nil {
+
+				zapCfg.OutputPaths = []string{cfg.Log.Output}
+				if logger, err = zapCfg.Build(); err != nil {
 					return nil, err
 				}
 

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/sepuka/chat/internal/config"
+
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/internal/def"
 )
@@ -11,13 +13,12 @@ import (
 const ClientDef = "http.client"
 
 func init() {
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: ClientDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				client := &http.Client{}
 				var (
-					cfg       = ctx.Get(def.CfgDef).(def.Config)
 					transport = &http.Transport{}
 				)
 

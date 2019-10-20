@@ -2,6 +2,7 @@ package def
 
 import (
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/internal/config"
 )
 
 var (
@@ -10,16 +11,21 @@ var (
 )
 
 type (
-	creatorFn func(builder *di.Builder, cfg Config) error
-	Context    = di.Container
+	creatorFn func(builder *di.Builder, cfg *config.Config) error
+	Context   = di.Container
 )
 
 func Register(fn creatorFn) {
 	components = append(components, fn)
 }
 
-func Build(params Config) error {
+func Build(cfgPath string) error {
 	builder, err := di.NewBuilder()
+	if err != nil {
+		return err
+	}
+
+	params, err := config.GetConfig(cfgPath)
 	if err != nil {
 		return err
 	}

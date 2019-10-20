@@ -4,6 +4,8 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/sepuka/chat/internal/config"
+
 	"github.com/sepuka/chat/internal/def"
 
 	"github.com/go-pg/pg"
@@ -13,13 +15,12 @@ import (
 const DataBaseDef = "db.def"
 
 func init() {
-	def.Register(func(builder *di.Builder, cfg def.Config) error {
+	def.Register(func(builder *di.Builder, cfg *config.Config) error {
 		return builder.Add(di.Def{
 			Name: DataBaseDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					db  *pg.DB
-					cfg = ctx.Get(def.CfgDef).(def.Config)
+					db *pg.DB
 				)
 
 				db = pg.Connect(&pg.Options{
