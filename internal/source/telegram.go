@@ -2,11 +2,12 @@ package source
 
 import (
 	"fmt"
-	"github.com/sepuka/chat/src/command"
-	"github.com/sepuka/chat/src/context"
-	"github.com/sepuka/chat/src/domain"
-	"go.uber.org/zap"
 	"log"
+
+	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/context"
+	"github.com/sepuka/chat/internal/domain"
+	"go.uber.org/zap"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )

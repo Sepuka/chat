@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"github.com/sepuka/chat/src/context"
-	"github.com/sepuka/chat/src/def"
-	"github.com/sepuka/chat/src/def/log"
-	"github.com/sepuka/chat/src/def/source"
-	commandSource "github.com/sepuka/chat/src/source"
+	"github.com/sepuka/chat/internal/context"
+	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/log"
+	"github.com/sepuka/chat/internal/def/source"
+	commandSource "github.com/sepuka/chat/internal/source"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
@@ -32,8 +32,7 @@ var (
 
 			logger := def.Container.Get(log.LoggerDef)
 			req := context.NewRequest(user, args[0], args[1:]...)
-			logger.
-			(*zap.SugaredLogger).
+			logger.(*zap.SugaredLogger).
 				Info(
 					`got terminal command`,
 					zap.String(`user`, req.GetLogin()),
@@ -41,7 +40,20 @@ var (
 					zap.Strings(`args`, req.GetArgs()),
 				)
 
-			return commandSourceListener.(*commandSource.Terminal).Execute(req)
+			result, err := commandSourceListener.(*commandSource.Terminal).Execute(req)
+			if err != nil {
+				return err
+			} else {
+				logger.(*zap.SugaredLogger).
+					Info(
+						result.Msg,
+						zap.String(`user`, req.GetLogin()),
+						zap.String(`command`, req.GetCommand()),
+						zap.Strings(`args`, req.GetArgs()),
+					)
+			}
+
+			return nil
 		},
 	}
 )

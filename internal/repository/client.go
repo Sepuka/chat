@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/sepuka/chat/src/domain"
+	"github.com/sepuka/chat/internal/domain"
 )
 
 type ClientRepository struct {

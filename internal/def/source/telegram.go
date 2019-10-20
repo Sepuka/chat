@@ -3,14 +3,15 @@ package source
 import (
 	"errors"
 	"fmt"
-	"github.com/sarulabs/di"
-	"github.com/sepuka/chat/src/command"
-	"github.com/sepuka/chat/src/def"
-	httpClient "github.com/sepuka/chat/src/def/http"
-	"github.com/sepuka/chat/src/def/log"
-	"github.com/sepuka/chat/src/source"
-	"go.uber.org/zap"
 	"net/http"
+
+	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/def"
+	httpClient "github.com/sepuka/chat/internal/def/http"
+	"github.com/sepuka/chat/internal/def/log"
+	"github.com/sepuka/chat/internal/source"
+	"go.uber.org/zap"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )

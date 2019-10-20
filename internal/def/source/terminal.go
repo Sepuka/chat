@@ -2,11 +2,11 @@ package source
 
 import (
 	"github.com/sarulabs/di"
-	"github.com/sepuka/chat/src/command"
-	"github.com/sepuka/chat/src/def"
-	"github.com/sepuka/chat/src/def/repository"
-	"github.com/sepuka/chat/src/domain"
-	"github.com/sepuka/chat/src/source"
+	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/repository"
+	"github.com/sepuka/chat/internal/domain"
+	"github.com/sepuka/chat/internal/source"
 )
 
 const (

@@ -2,8 +2,9 @@ package log
 
 import (
 	"errors"
+
 	"github.com/sarulabs/di"
-	"github.com/sepuka/chat/src/def"
+	"github.com/sepuka/chat/internal/def"
 	"go.uber.org/zap"
 )
 
@@ -16,14 +17,16 @@ func init() {
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
 					logger *zap.Logger
-					sugar *zap.SugaredLogger
-					err error
+					sugar  *zap.SugaredLogger
+					err    error
 				)
 
 				if cfg.Log.Prod {
-					logger, err  = zap.NewProduction()
+					logger, err = zap.NewProduction()
 				}
-				logger, err = zap.NewDevelopment()
+				if logger, err = zap.NewDevelopment(); err != nil {
+					return nil, err
+				}
 
 				sugar = logger.Sugar()
 				if sugar == nil {
@@ -39,4 +42,3 @@ func init() {
 		})
 	})
 }
-

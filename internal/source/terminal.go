@@ -2,9 +2,10 @@ package source
 
 import (
 	"errors"
-	"github.com/sepuka/chat/src/command"
-	"github.com/sepuka/chat/src/context"
-	"github.com/sepuka/chat/src/domain"
+
+	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/context"
+	"github.com/sepuka/chat/internal/domain"
 )
 
 var (
@@ -26,10 +27,10 @@ func NewTerminal(
 	}
 }
 
-func (src *Terminal) Execute(req *context.Request) error {
+func (src *Terminal) Execute(req *context.Request) (*command.Result, error) {
 	if f, ok := src.commands[req.GetCommand()]; ok {
 		return f.Exec(req)
 	}
 
-	return unknownInstruction
+	return nil, unknownInstruction
 }

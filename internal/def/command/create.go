@@ -1,19 +1,18 @@
 package command
 
 import (
-	"github.com/sepuka/chat/src/command"
-	"github.com/sepuka/chat/src/def"
-	"github.com/sepuka/chat/src/def/log"
-	"github.com/sepuka/chat/src/def/repository"
-	"github.com/sepuka/chat/src/def/source"
-	"github.com/sepuka/chat/src/domain"
 	"github.com/sarulabs/di"
+	"github.com/sepuka/chat/internal/command"
+	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/log"
+	"github.com/sepuka/chat/internal/def/repository"
+	"github.com/sepuka/chat/internal/def/source"
+	"github.com/sepuka/chat/internal/domain"
 	"go.uber.org/zap"
 )
 
 const (
-	CreateDef     = `def.command.create`
-	createPrecept = `create`
+	CreateDef = `def.command.create`
 )
 
 func init() {
@@ -32,7 +31,7 @@ func init() {
 					logger = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
 				)
 
-				return command.NewCreate(createPrecept, pool, logger), nil
+				return command.NewCreate(pool, logger), nil
 			},
 		})
 	})

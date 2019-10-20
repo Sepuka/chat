@@ -1,9 +1,10 @@
 package db
 
 import (
-	"github.com/sepuka/chat/src/def"
 	"net"
 	"strconv"
+
+	"github.com/sepuka/chat/internal/def"
 
 	"github.com/go-pg/pg"
 	"github.com/sarulabs/di"

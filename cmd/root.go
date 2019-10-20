@@ -1,29 +1,30 @@
 package cmd
 
 import (
-	"github.com/sepuka/chat/src/def"
 	"fmt"
 	"os"
 
+	"github.com/sepuka/chat/internal/def"
+
 	"github.com/spf13/cobra"
 
-	_ "github.com/sepuka/chat/src/def/command"
+	_ "github.com/sepuka/chat/internal/def/command"
 )
 
 var (
 	configFile string
 
 	rootCmd = &cobra.Command{
-	Use:   "chat",
-	Short: "Test telegram chat",
-	Args: cobra.MinimumNArgs(1),
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		cfg := def.Config{}
-		cfg.Path = configFile
+		Use:   "chat",
+		Short: "Test telegram chat",
+		Args:  cobra.MinimumNArgs(1),
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			cfg := def.Config{}
+			cfg.Path = configFile
 
-		return def.Build(cfg)
-	},
-}
+			return def.Build(cfg)
+		},
+	}
 )
 
 func Execute() {

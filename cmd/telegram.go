@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/sepuka/chat/src/def"
-	"github.com/sepuka/chat/src/def/source"
-	commandSource "github.com/sepuka/chat/src/source"
+	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/source"
+	commandSource "github.com/sepuka/chat/internal/source"
 	"github.com/spf13/cobra"
 )
 

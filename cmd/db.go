@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"github.com/sepuka/chat/src/def"
-	db2 "github.com/sepuka/chat/src/def/db"
-	"github.com/sepuka/chat/src/domain"
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
+	"github.com/sepuka/chat/internal/def"
+	db2 "github.com/sepuka/chat/internal/def/db"
+	"github.com/sepuka/chat/internal/domain"
 	"github.com/spf13/cobra"
 )
 
