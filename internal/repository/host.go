@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/go-pg/pg"
 	"github.com/sepuka/chat/internal/domain"
 )
@@ -30,4 +32,16 @@ func (r *VirtualHostRepository) GetUsersHosts(client *domain.Client) ([]*domain.
 	}
 
 	return nil, err
+}
+
+func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) error {
+	var host = &domain.VirtualHost{
+		PoolId:    pool.Id,
+		ClientId:  client.Id,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		DeletedAt: pg.NullTime{},
+	}
+
+	return r.db.Insert(host)
 }

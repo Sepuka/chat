@@ -27,12 +27,17 @@ type (
 		Output string
 	}
 
+	pool struct {
+		Login string
+	}
+
 	Config struct {
 		Path       string
 		HttpClient httpClient `id:"http"`
 		Telegram   telegram
 		Database   database
 		Log        log
+		Pool       pool
 	}
 )
 

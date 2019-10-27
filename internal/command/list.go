@@ -47,10 +47,14 @@ func (l *List) Exec(req *context.Request) (*Result, error) {
 			)
 			return nil, errors.New(`some error occurred`)
 		}
-		return &Result{Msg: fmt.Sprintf(`you're have %d hosts`, len(hosts))}, nil
+		return &Result{
+			Response: []byte(fmt.Sprintf(`you're have %d hosts`, len(hosts))),
+		}, nil
 	}
 
-	return &Result{Msg: fmt.Sprintf(`you're have not any hosts`)}, nil
+	return &Result{
+		Response: []byte(`you're have not any hosts`),
+	}, nil
 }
 
 func (l *List) Precept() string {

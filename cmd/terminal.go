@@ -5,6 +5,7 @@ import (
 	"github.com/sepuka/chat/internal/def"
 	"github.com/sepuka/chat/internal/def/log"
 	"github.com/sepuka/chat/internal/def/source"
+	"github.com/sepuka/chat/internal/domain"
 	commandSource "github.com/sepuka/chat/internal/source"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -30,9 +31,9 @@ var (
 				return err
 			}
 
-			logger := def.Container.Get(log.LoggerDef)
-			req := context.NewRequest(user, args[0], args[1:]...)
-			logger.(*zap.SugaredLogger).
+			logger := def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
+			req := context.NewRequest(user, domain.Terminal, args[0], args[1:]...)
+			logger.
 				Info(
 					`got terminal command`,
 					zap.String(`user`, req.GetLogin()),
@@ -44,9 +45,9 @@ var (
 			if err != nil {
 				return err
 			} else {
-				logger.(*zap.SugaredLogger).
+				logger.
 					Info(
-						result.Msg,
+						result.Response,
 						zap.String(`user`, req.GetLogin()),
 						zap.String(`command`, req.GetCommand()),
 						zap.Strings(`args`, req.GetArgs()),

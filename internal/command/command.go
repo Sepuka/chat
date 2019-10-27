@@ -3,7 +3,8 @@ package command
 import "github.com/sepuka/chat/internal/context"
 
 type Result struct {
-	Msg string
+	Code     int
+	Response []byte
 }
 
 type Executor interface {

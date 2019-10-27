@@ -12,6 +12,9 @@ database:
   host: localhost
   port: 5433
 
+pool:
+  login: username
+
 log:
   prod: true
   output: /tmp/chat.log

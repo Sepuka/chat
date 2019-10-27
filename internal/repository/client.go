@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/go-pg/pg"
 	"github.com/sepuka/chat/internal/domain"
 )
@@ -21,7 +23,19 @@ func (c *ClientRepository) GetByLogin(login string) (*domain.Client, error) {
 	err = c.
 		db.
 		Model(client).
-		Where(`client.login = ?`, login).Select()
+		Where(`client.login = ?`, login).
+		Select()
 
 	return client, err
+}
+
+func (c *ClientRepository) Add(login string, source domain.ClientSource) error {
+	var client = &domain.Client{
+		Login:     login,
+		CreatedAt: time.Now(),
+		DeletedAt: pg.NullTime{},
+		Source:    source,
+	}
+
+	return c.db.Insert(client)
 }

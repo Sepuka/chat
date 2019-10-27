@@ -5,6 +5,7 @@ import (
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/config"
 	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/cloud"
 	"github.com/sepuka/chat/internal/def/log"
 	"github.com/sepuka/chat/internal/def/repository"
 	"github.com/sepuka/chat/internal/def/source"
@@ -28,11 +29,14 @@ func init() {
 			},
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					pool   = def.Container.Get(repository.PoolRepoDef).(domain.PoolRepository)
-					logger = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
+					poolRepo   = def.Container.Get(repository.PoolRepoDef).(domain.PoolRepository)
+					hostRepo   = def.Container.Get(repository.HostRepoDef).(domain.VirtualHostRepository)
+					clientRepo = def.Container.Get(repository.ClientRepoDef).(domain.ClientRepository)
+					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
+					sshClient  = def.Container.Get(cloud.SshCloudDef).(domain.Cloud)
 				)
 
-				return command.NewCreate(pool, logger), nil
+				return command.NewCreate(poolRepo, hostRepo, clientRepo, logger, sshClient), nil
 			},
 		})
 	})

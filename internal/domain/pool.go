@@ -3,10 +3,13 @@ package domain
 import (
 	"net"
 	"time"
+
+	"github.com/go-pg/pg"
 )
 
 type PoolRepository interface {
-	GetFreePool() (*Pool, error)
+	OccupyVacant() (*Pool, *pg.Tx, error)
+	Engage(*Pool, *pg.Tx) error
 }
 
 type Pool struct {
@@ -17,4 +20,5 @@ type Pool struct {
 	DeletedAt time.Time `pg:",soft_delete"`
 	Active    bool      `sql:",notnull,default:false"`
 	Workload  uint64    `sql:",notnull,default:0"`
+	Secret    string    `sql:",notnull"`
 }

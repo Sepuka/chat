@@ -47,7 +47,7 @@ func (hosting *Telegram) Listen() error {
 			continue
 		}
 
-		req := context.NewRequest(update.Message.From.UserName, update.Message.Text)
+		req := context.NewRequest(update.Message.From.UserName, domain.Telegram, update.Message.Text)
 		hosting.logger.
 			Info(
 				`got telegram command`,

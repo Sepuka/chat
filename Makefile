@@ -13,10 +13,10 @@ build:
 	go build -o $(PROGRAM_NAME)
 
 telegram: build
-	./chat telegram -c config/dev.yml
+	./${PROGRAM_NAME} telegram -c config/dev.yml
 
 terminal: build
-	./chat terminal ${instr} -c config/dev.yml -u ${user}
+	./${PROGRAM_NAME} terminal ${instr} -c config/dev.yml -u ${user}
 
 db:
 	docker build -t hosting_db docker/parts/pg/
