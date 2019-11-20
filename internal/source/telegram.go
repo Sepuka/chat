@@ -2,7 +2,6 @@ package source
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/context"
@@ -35,7 +34,7 @@ func (hosting *Telegram) Listen() error {
 		msg tgbotapi.MessageConfig
 	)
 
-	log.Printf("Authorized on account %s", hosting.bot.Self.UserName)
+	hosting.logger.Infof(`authorized on account "%s"`, hosting.bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 30
