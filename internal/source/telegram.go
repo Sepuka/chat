@@ -1,7 +1,6 @@
 package source
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/sepuka/chat/internal/command"
@@ -17,10 +16,6 @@ type Telegram struct {
 	bot      *tgbotapi.BotAPI
 	logger   *zap.SugaredLogger
 }
-
-var (
-	cmdExecutionError = errors.New(`execution error`)
-)
 
 func NewTelegram(
 	commandsMap map[string]command.Executor,
@@ -47,7 +42,7 @@ func (hosting *Telegram) Listen() error {
 	updates, _ := hosting.bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil {
+		if update.Message == nil { // ignore any non-Message Updates
 			continue
 		}
 
@@ -61,21 +56,14 @@ func (hosting *Telegram) Listen() error {
 			)
 
 		if f, ok := hosting.commands[update.Message.Text]; ok {
-			cmdResult, err := f.Exec(req)
-			if err != nil {
-				hosting.logger.Error(
-					`command execution error`,
-					zap.Error(err),
-				)
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, cmdExecutionError.Error())
-			} else {
-				hosting.logger.Debug(
-					`command was finished`,
-					zap.ByteString(`response text`, cmdResult.Response),
-					zap.Int(`response code`, cmdResult.Code),
-				)
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(`command '%s' accepted`, cmdResult))
-			}
+			f.Exec(req)
+		}
+
+		cmd, err := domain.NewCommand(update.Message.Text)
+		if err != nil {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+		} else {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(`command '%s' accepted`, cmd))
 		}
 
 		msg.ReplyToMessageID = update.Message.MessageID
