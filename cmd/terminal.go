@@ -21,7 +21,7 @@ var (
 	user        string
 	terminalCmd = &cobra.Command{
 		Use:     `terminal`,
-		Example: `terminal instr=list -c /config/path -u vasya`,
+		Example: `terminal list -c /config/path -u vasya`,
 		Short:   `hosting terminal controller`,
 		Long:    `Manages hosting staff via terminal`,
 		Args:    cobra.MinimumNArgs(1),
@@ -43,11 +43,17 @@ var (
 
 			result, err := commandSourceListener.(*commandSource.Terminal).Execute(req)
 			if err != nil {
+				logger.Error(
+					err.Error(),
+					zap.String(`user`, req.GetLogin()),
+					zap.String(`command`, req.GetCommand()),
+					zap.Strings(`args`, req.GetArgs()),
+				)
 				return err
 			} else {
 				logger.
 					Info(
-						result.Response,
+						string(result.Response),
 						zap.String(`user`, req.GetLogin()),
 						zap.String(`command`, req.GetCommand()),
 						zap.Strings(`args`, req.GetArgs()),

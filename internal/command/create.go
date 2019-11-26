@@ -14,7 +14,7 @@ const (
 	cmdCreate domain.RemoteCmd = `touch /tmp/test`
 )
 
-var FreePoolIsAbsent = errors.New(`free pools is absent`)
+var FreePoolAreAbsent = errors.New(`free pools are absent`)
 
 type Create struct {
 	poolRepo   domain.PoolRepository
@@ -107,7 +107,7 @@ func (c *Create) FindPool(client *domain.Client) (*domain.Pool, *pg.Tx, error) {
 	if pool, trx, err = c.poolRepo.OccupyVacant(); err != nil {
 		if err == pg.ErrNoRows {
 			c.logger.Error(`unable to find any vacant pool: `, err)
-			return nil, nil, FreePoolIsAbsent
+			return nil, nil, FreePoolAreAbsent
 		}
 	}
 
