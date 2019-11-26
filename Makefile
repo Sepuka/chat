@@ -26,7 +26,7 @@ pgdump:
 	PGPASSWORD="1234" pg_dump -h localhost -p 5433 -U hosting -f docker/parts/pg/dump.sql hosting
 
 gen_tbl: build
-	./chat db generate -c config/dev.yml
+	./hosting db generate -c config/dev.yml
 
 joomla_unpack:
 	rm -rf docker/tariff/joomla/web/src/*
