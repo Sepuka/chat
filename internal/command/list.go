@@ -34,7 +34,6 @@ func (l *List) Exec(req *context.Request) (*Result, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if client != nil {
 		hosts, err := l.hostsRepo.GetUsersHosts(client)
 		if err != nil {

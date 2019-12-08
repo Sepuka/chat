@@ -22,9 +22,15 @@ type (
 		Port     int
 	}
 
+	telegramErrorLogger struct {
+		Channel string
+		Timeout int
+	}
+
 	log struct {
-		Prod   bool
-		Output string
+		Prod        bool
+		Output      string
+		ErrorLogger telegramErrorLogger
 	}
 
 	pool struct {

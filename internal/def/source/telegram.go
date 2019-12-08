@@ -50,10 +50,10 @@ func init() {
 			Name: TelegramDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
+					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
 					handlers   = def.GetByTag(CommandTagName)
 					handlerMap = make(map[string]command.Executor, len(handlers))
 					bot        = ctx.Get(BotDef).(*tgbotapi.BotAPI)
-					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
 				)
 
 				for _, cmd := range handlers {
