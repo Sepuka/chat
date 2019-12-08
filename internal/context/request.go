@@ -6,6 +6,10 @@ import (
 	"github.com/sepuka/chat/internal/domain"
 )
 
+const (
+	maxCmdLength = 32
+)
+
 type Request struct {
 	login   string
 	source  domain.ClientSource
@@ -19,6 +23,9 @@ func NewRequest(
 	command string,
 	args ...string,
 ) *Request {
+	if len(command) >= maxCmdLength {
+		command = command[:maxCmdLength]
+	}
 	return &Request{
 		login:   login,
 		source:  source,
