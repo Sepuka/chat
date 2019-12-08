@@ -28,9 +28,9 @@ type (
 	}
 
 	log struct {
-		Prod        bool
-		Output      string
-		ErrorLogger telegramErrorLogger
+		Prod     bool
+		Output   string
+		Telegram telegramErrorLogger
 	}
 
 	pool struct {

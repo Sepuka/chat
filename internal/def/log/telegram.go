@@ -29,7 +29,7 @@ func init() {
 					client = ctx.Get(http.ClientDef).(*http2.Client)
 				)
 
-				client.Timeout = time.Second * time.Duration(cfg.Log.ErrorLogger.Timeout)
+				client.Timeout = time.Second * time.Duration(cfg.Log.Telegram.Timeout)
 
 				bot, err := tgbotapi.NewBotAPIWithClient(cfg.Telegram.Token, client)
 				if err != nil {
@@ -51,7 +51,7 @@ func init() {
 					botApi = def.Container.Get(TelegramBotDef)
 				)
 
-				return NewTelegramSyncer(botApi.(*tgbotapi.BotAPI), cfg.Log.ErrorLogger.Channel), nil
+				return NewTelegramSyncer(botApi.(*tgbotapi.BotAPI), cfg.Log.Telegram.Channel), nil
 			},
 		})
 	})
@@ -76,7 +76,7 @@ func (s TelegramSyncer) Sync() error {
 func (s TelegramSyncer) Write(p []byte) (n int, err error) {
 	channel := strings.TrimPrefix(s.channel, `@`)
 	parts := bytes.SplitN(p, []byte("\t"), 3)
-	msg := tgbotapi.NewMessageToChannel(fmt.Sprintf(`@%s`, channel), string(parts[2]))
+	msg := tgbotapi.NewMessageToChannel(fmt.Sprintf(`@%s`, channel), string(bytes.TrimSpace(parts[2])))
 	res, err := s.bot.Send(msg)
 
 	return len(res.Text), err
