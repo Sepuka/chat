@@ -42,7 +42,7 @@ func (hosting *Telegram) Listen() error {
 	updates, _ := hosting.bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
+		if update.Message == nil {
 			continue
 		}
 

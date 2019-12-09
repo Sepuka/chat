@@ -57,7 +57,7 @@ func NewSslClient(
 }
 
 func (c *SshClient) RemoteCmd(cmd domain.RemoteCmd) ([]byte, error) {
-	client, err := ssh.Dial(`tcp`, c.addr+":35042", c.cfg)
+	client, err := ssh.Dial(`tcp`, c.addr, c.cfg)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, `cannot connect to server`)
 	}
