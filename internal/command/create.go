@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	cmdCreate domain.RemoteCmd = `touch /tmp/test`
+	cmdCreate domain.RemoteCmd = `docker run -d sepuka/joomla.volatiland`
 )
 
 var FreePoolAreAbsent = errors.New(`free pools are absent`)
