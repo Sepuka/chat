@@ -30,10 +30,6 @@ func NewTelegram(
 }
 
 func (hosting *Telegram) Listen() error {
-	var (
-		msg tgbotapi.MessageConfig
-	)
-
 	hosting.logger.Infof(`authorized on account "%s"`, hosting.bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
@@ -55,21 +51,29 @@ func (hosting *Telegram) Listen() error {
 				zap.Strings(`args`, req.GetArgs()),
 			)
 
+		var result *command.Result
+		var err error
 		if f, ok := hosting.commands[update.Message.Text]; ok {
-			f.Exec(req)
-		}
+			hosting.sendAnswer(update.Message, fmt.Sprintf(`command '%s' accepted`, update.Message.Text))
 
-		cmd, err := domain.NewCommand(update.Message.Text)
-		if err != nil {
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+			result, err = f.Exec(req)
+			var answer string
+			if err != nil {
+				answer = err.Error()
+			} else {
+				answer = fmt.Sprintf(`command result: %s`, result.Response)
+			}
+			hosting.sendAnswer(update.Message, answer)
 		} else {
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(`command '%s' accepted`, cmd))
+			hosting.sendAnswer(update.Message, `unknown command`)
 		}
-
-		msg.ReplyToMessageID = update.Message.MessageID
-
-		hosting.bot.Send(msg)
 	}
 
 	return nil
+}
+
+func (hosting *Telegram) sendAnswer(srcMsg *tgbotapi.Message, text string) (tgbotapi.Message, error) {
+	msg := tgbotapi.NewMessage(srcMsg.Chat.ID, text)
+	msg.ReplyToMessageID = srcMsg.MessageID
+	return hosting.bot.Send(msg)
 }

@@ -31,7 +31,7 @@ func (r *VirtualHostRepository) GetUsersHosts(client *domain.Client) ([]*domain.
 		}
 	}
 
-	return nil, err
+	return hosts, err
 }
 
 func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) error {
