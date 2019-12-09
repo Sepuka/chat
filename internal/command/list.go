@@ -2,7 +2,8 @@ package command
 
 import (
 	"errors"
-	"fmt"
+
+	"github.com/sepuka/chat/internal/format"
 
 	"go.uber.org/zap"
 
@@ -30,6 +31,9 @@ func NewList(
 }
 
 func (l *List) Exec(req *context.Request) (*Result, error) {
+	var (
+		formatter = format.NewShortHostsListFormatter(req.GetSource())
+	)
 	client, err := l.getClient(req.GetLogin())
 	if err != nil {
 		return nil, err
@@ -46,8 +50,9 @@ func (l *List) Exec(req *context.Request) (*Result, error) {
 			)
 			return nil, errors.New(`some error occurred`)
 		}
+
 		return &Result{
-			Response: []byte(fmt.Sprintf(`you're have %d hosts`, len(hosts))),
+			Response: []byte(formatter.Format(hosts)),
 		}, nil
 	}
 
