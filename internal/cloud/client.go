@@ -1,7 +1,6 @@
 package cloud
 
 import (
-	"net"
 	"time"
 
 	"github.com/pkg/errors"
@@ -32,10 +31,8 @@ func (c *ClientBuilder) Build(addr string, key []byte) (*SshClient, error) {
 		Auth: []ssh.AuthMethod{
 			ssh.PublicKeys(signer),
 		},
-		Timeout: time.Second * 5,
-		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
-			return nil
-		},
+		Timeout:         time.Second * 5,
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
 	return NewSslClient(cfg, addr), nil
