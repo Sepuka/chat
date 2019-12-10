@@ -23,6 +23,9 @@ func (r *VirtualHostRepository) GetUsersHosts(client *domain.Client) ([]*domain.
 	err = r.
 		db.
 		Model(&hosts).
+		Column(`virtual_host.*`).
+		Relation(`Pool`).
+		Relation(`Client`).
 		Where(`client_id = ?`, client.Id).Select()
 
 	if err != nil {
