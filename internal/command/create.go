@@ -14,7 +14,10 @@ const (
 	cmdCreate domain.RemoteCmd = `docker run -d sepuka/joomla.volatiland`
 )
 
-var FreePoolAreAbsent = errors.New(`free pools are absent`)
+var (
+	FreePoolAreAbsent  = errors.New(`free pools are absent`)
+	HostsLimitExceeded = errors.New(`hosts limit exceeded`)
+)
 
 type Create struct {
 	poolRepo   domain.PoolRepository
@@ -45,6 +48,7 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		pool   *domain.Pool
 		client *domain.Client
 		trx    *pg.Tx
+		hosts  []*domain.VirtualHost
 		err    error
 		result = &Result{
 			Response: []byte(`internal error`),
@@ -60,11 +64,19 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 
 				return result, err
 			}
+		} else {
+			c.logger.Errorf(`client %s not found: %s`, req.GetFQDN(), err)
+
+			return result, err
 		}
+	}
 
-		c.logger.Errorf(`client %s not found: %s`, req.GetFQDN(), err)
-
-		return result, err
+	if hosts, err = c.hostRepo.GetUsersHosts(client); err != nil {
+		c.logger.Errorf(`cannot check exists client's hosts: %s`, err)
+		return result, HostsLimitExceeded
+	}
+	if client.IsLimitExceeded(len(hosts)) {
+		return result, HostsLimitExceeded
 	}
 
 	pool, trx, err = c.FindPool(client)

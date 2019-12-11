@@ -24,7 +24,7 @@ var (
 				return err
 			}
 
-			for _, model := range []interface{}{&domain.Pool{}, &domain.Client{}, &domain.VirtualHost{}} {
+			for _, model := range []interface{}{&domain.ClientProperties{}} {
 				err := db.CreateTable(model, &orm.CreateTableOptions{
 					FKConstraints: true,
 				})
