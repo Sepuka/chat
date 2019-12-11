@@ -21,5 +21,9 @@ type Client struct {
 }
 
 func (c *Client) IsLimitExceeded(actual int) bool {
-	return c.Properties != nil && int(c.Properties.HostsLimit) >= actual
+	if c.Properties == nil {
+		return actual >= DefaultHostsLimit
+	}
+
+	return int(c.Properties.HostsLimit) >= actual
 }
