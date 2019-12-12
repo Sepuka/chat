@@ -5,6 +5,7 @@ import (
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/config"
 	"github.com/sepuka/chat/internal/def"
+	commandDef "github.com/sepuka/chat/internal/def/command"
 	"github.com/sepuka/chat/internal/def/repository"
 	"github.com/sepuka/chat/internal/domain"
 	"github.com/sepuka/chat/internal/source"
@@ -20,15 +21,11 @@ func init() {
 			Name: TerminalDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					handlers   = def.GetByTag(CommandTagName)
-					handlerMap = make(map[string]command.Executor, len(handlers))
+					handlerMap command.HandlerMap
 					clientRepo = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
 				)
 
-				for _, cmd := range handlers {
-					precept := cmd.(command.Preceptable)
-					handlerMap[precept.Precept()] = cmd.(command.Executor)
-				}
+				handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
 
 				return source.NewTerminal(handlerMap, clientRepo), nil
 			},

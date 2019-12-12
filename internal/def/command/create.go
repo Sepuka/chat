@@ -8,7 +8,6 @@ import (
 	"github.com/sepuka/chat/internal/def/cloud"
 	"github.com/sepuka/chat/internal/def/log"
 	"github.com/sepuka/chat/internal/def/repository"
-	"github.com/sepuka/chat/internal/def/source"
 	"github.com/sepuka/chat/internal/domain"
 	"go.uber.org/zap"
 )
@@ -23,7 +22,7 @@ func init() {
 			Name: CreateDef,
 			Tags: []di.Tag{
 				{
-					Name: source.CommandTagName,
+					Name: ExecutorDef,
 					Args: nil,
 				},
 			},

@@ -18,7 +18,7 @@ type Terminal struct {
 }
 
 func NewTerminal(
-	commandsMap map[string]command.Executor,
+	commandsMap command.HandlerMap,
 	clientRepo domain.ClientRepository,
 ) *Terminal {
 	return &Terminal{

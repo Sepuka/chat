@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	commandDef "github.com/sepuka/chat/internal/def/command"
+
 	"github.com/sepuka/chat/internal/config"
 
 	"github.com/sarulabs/di"
@@ -19,9 +21,8 @@ import (
 )
 
 const (
-	TelegramDef    = `command.handler.telegram.def`
-	BotDef         = `command.source.telegram.def`
-	CommandTagName = `hosting.command.tag`
+	TelegramDef = `command.handler.telegram.def`
+	BotDef      = `command.source.telegram.def`
 )
 
 func init() {
@@ -51,15 +52,11 @@ func init() {
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
 					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
-					handlers   = def.GetByTag(CommandTagName)
-					handlerMap = make(map[string]command.Executor, len(handlers))
 					bot        = ctx.Get(BotDef).(*tgbotapi.BotAPI)
+					handlerMap command.HandlerMap
 				)
 
-				for _, cmd := range handlers {
-					precept := cmd.(command.Preceptable)
-					handlerMap[precept.Precept()] = cmd.(command.Executor)
-				}
+				handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
 
 				return source.NewTelegram(handlerMap, bot, logger), nil
 			},

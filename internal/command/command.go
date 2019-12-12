@@ -1,6 +1,10 @@
 package command
 
-import "github.com/sepuka/chat/internal/context"
+import (
+	"github.com/sepuka/chat/internal/context"
+)
+
+type HandlerMap map[string]Executor
 
 type Result struct {
 	Code     int
@@ -12,5 +16,5 @@ type Executor interface {
 }
 
 type Preceptable interface {
-	Precept() string
+	Precept() []string
 }

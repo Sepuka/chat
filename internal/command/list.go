@@ -61,8 +61,11 @@ func (l *List) Exec(req *context.Request) (*Result, error) {
 	}, nil
 }
 
-func (l *List) Precept() string {
-	return `list`
+func (l *List) Precept() []string {
+	return []string{
+		`list`,
+		`/list`,
+	}
 }
 
 func (l *List) getClient(login string) (*domain.Client, error) {

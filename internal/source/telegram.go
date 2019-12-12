@@ -12,13 +12,13 @@ import (
 )
 
 type Telegram struct {
-	commands map[string]command.Executor
+	commands command.HandlerMap
 	bot      *tgbotapi.BotAPI
 	logger   *zap.SugaredLogger
 }
 
 func NewTelegram(
-	commandsMap map[string]command.Executor,
+	commandsMap command.HandlerMap,
 	bot *tgbotapi.BotAPI,
 	logger *zap.SugaredLogger,
 ) *Telegram {

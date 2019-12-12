@@ -135,9 +135,9 @@ func (c *Create) rejectHost(trx *pg.Tx) error {
 	return trx.Rollback()
 }
 
-func (c *Create) Engage(pool *domain.Pool, trx *pg.Tx) {
-}
-
-func (c *Create) Precept() string {
-	return `create`
+func (c *Create) Precept() []string {
+	return []string{
+		`create`,
+		`/create`,
+	}
 }

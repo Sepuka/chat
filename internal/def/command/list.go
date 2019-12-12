@@ -7,7 +7,6 @@ import (
 	"github.com/sepuka/chat/internal/def"
 	"github.com/sepuka/chat/internal/def/log"
 	"github.com/sepuka/chat/internal/def/repository"
-	"github.com/sepuka/chat/internal/def/source"
 	"github.com/sepuka/chat/internal/domain"
 	"go.uber.org/zap"
 )
@@ -22,7 +21,7 @@ func init() {
 			Name: ListDef,
 			Tags: []di.Tag{
 				{
-					Name: source.CommandTagName,
+					Name: ExecutorDef,
 					Args: nil,
 				},
 			},
