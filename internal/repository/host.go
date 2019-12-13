@@ -37,7 +37,7 @@ func (r *VirtualHostRepository) GetUsersHosts(client *domain.Client) ([]*domain.
 	return hosts, err
 }
 
-func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) error {
+func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) (*domain.VirtualHost, error) {
 	var host = &domain.VirtualHost{
 		PoolId:    pool.Id,
 		ClientId:  client.Id,
@@ -46,5 +46,9 @@ func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) er
 		DeletedAt: pg.NullTime{},
 	}
 
-	return r.db.Insert(host)
+	return host, r.db.Insert(host)
+}
+
+func (r *VirtualHostRepository) Update(host *domain.VirtualHost) error {
+	return r.db.Update(host)
 }

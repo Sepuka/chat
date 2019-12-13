@@ -8,7 +8,8 @@ import (
 
 type VirtualHostRepository interface {
 	GetUsersHosts(*Client) ([]*VirtualHost, error)
-	Add(*Pool, *Client) error
+	Add(*Pool, *Client) (*VirtualHost, error)
+	Update(host *VirtualHost) error
 }
 
 type VirtualHost struct {
@@ -18,6 +19,7 @@ type VirtualHost struct {
 	CreatedAt time.Time   `sql:",notnull,default:now()"`
 	UpdatedAt time.Time   `sql:",notnull,default:now()"`
 	DeletedAt pg.NullTime `pg:",soft_delete"`
+	Container string      `sql:",notnull"`
 	Pool      *Pool       `sql:"fk:id,notnull"`
 	Client    *Client     `sql:"fk:id,notnull"`
 }

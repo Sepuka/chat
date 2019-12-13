@@ -1,7 +1,10 @@
 package command
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/go-pg/pg"
 
@@ -11,7 +14,7 @@ import (
 )
 
 const (
-	cmdCreate domain.RemoteCmd = `docker run -d sepuka/joomla.volatiland`
+	cmdCreate = `docker run -d --name %s sepuka/joomla.volatiland`
 )
 
 var (
@@ -49,10 +52,12 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		client *domain.Client
 		trx    *pg.Tx
 		hosts  []*domain.VirtualHost
+		host   *domain.VirtualHost
 		err    error
 		result = &Result{
 			Response: []byte(`internal error`),
 		}
+		container string
 	)
 
 	client, err = c.clientRepo.GetByLogin(req.GetLogin())
@@ -79,7 +84,8 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		return result, HostsLimitExceeded
 	}
 
-	pool, trx, err = c.FindPool(client)
+	container = fmt.Sprintf(`%s_%d_%s`, client.Login, client.Source, time.Now().Format("20060102150405"))
+	pool, host, trx, err = c.FindPool(client)
 	if err != nil {
 		c.logger.Errorf(`unable to find any free pool: %s`, err)
 		result.Response = []byte(`no free pool`)
@@ -87,8 +93,8 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		return result, err
 	}
 
-	answer, err := c.cloud.Run(pool, cmdCreate)
-	c.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, answer, client.Id, client.Login, client.Source)
+	answer, err := c.cloud.Run(pool, c.buildCommand(container))
+	c.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, pool.Id, answer, client.Id, client.Login, client.Source)
 
 	if err != nil {
 		c.logger.Errorf(`unable to create new virtual host: %s`, err)
@@ -98,6 +104,14 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 
 		return result, err
 	} else {
+		host.Container = string(bytes.Trim(answer, "\n"))
+		if err = c.hostRepo.Update(host); err != nil {
+			c.logger.Errorf(`error while updating virtual host %d: %s`, host.Id, err)
+			if rejectErr := c.rejectHost(trx); rejectErr != nil {
+				c.logger.Errorf(`unable to reject new virtual host in pool %d for user %d: %s`, pool.Id, client.Id, err)
+			}
+			return result, err
+		}
 		if err = c.poolRepo.Engage(pool, trx); err != nil {
 			c.logger.Errorf(`cannot engage new virtual host %s`, err)
 			return result, err
@@ -109,26 +123,27 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 	return result, nil
 }
 
-func (c *Create) FindPool(client *domain.Client) (*domain.Pool, *pg.Tx, error) {
+func (c *Create) FindPool(client *domain.Client) (*domain.Pool, *domain.VirtualHost, *pg.Tx, error) {
 	var (
 		pool *domain.Pool
 		trx  *pg.Tx
 		err  error
+		host *domain.VirtualHost
 	)
 
 	if pool, trx, err = c.poolRepo.OccupyVacant(); err != nil {
 		if err == pg.ErrNoRows {
 			c.logger.Error(`unable to find any vacant pool: `, err)
-			return nil, nil, FreePoolAreAbsent
+			return nil, nil, nil, FreePoolAreAbsent
 		}
 	}
 
-	if err = c.hostRepo.Add(pool, client); err != nil {
+	if host, err = c.hostRepo.Add(pool, client); err != nil {
 		c.logger.Error(`unable to add new virtual host: `, err)
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return pool, trx, err
+	return pool, host, trx, err
 }
 
 func (c *Create) rejectHost(trx *pg.Tx) error {
@@ -140,4 +155,8 @@ func (c *Create) Precept() []string {
 		`create`,
 		`/create`,
 	}
+}
+
+func (c *Create) buildCommand(name string) domain.RemoteCmd {
+	return domain.RemoteCmd(fmt.Sprintf(cmdCreate, name))
 }

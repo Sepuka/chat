@@ -25,5 +25,5 @@ func (c *Client) IsLimitExceeded(actual int) bool {
 		return actual >= DefaultHostsLimit
 	}
 
-	return int(c.Properties.HostsLimit) >= actual
+	return int(c.Properties.HostsLimit) <= actual
 }
