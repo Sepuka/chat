@@ -3,6 +3,7 @@ package format
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/sepuka/chat/internal/domain"
 )
@@ -38,12 +39,9 @@ func (f *ShortHostsListFormatter) extendList(hosts []*domain.VirtualHost) string
 		id      string
 	)
 	for _, host := range hosts {
-		if len(host.Container) > 0 {
-			id = host.Container[:12]
-		} else {
-			id = "*crashed*"
-		}
-		details = append(details, fmt.Sprintf("`%s`@%s created at %s", id, host.Pool.Address, host.CreatedAt))
+		id = host.Container[:12]
+		format := host.CreatedAt.Format(time.RFC822)
+		details = append(details, fmt.Sprintf("%s@%s created at %s", id, host.Pool.Address, format))
 	}
 
 	return strings.Join(details, "\n")
