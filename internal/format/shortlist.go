@@ -33,9 +33,17 @@ func (f *ShortHostsListFormatter) Format(hosts []*domain.VirtualHost) string {
 }
 
 func (f *ShortHostsListFormatter) extendList(hosts []*domain.VirtualHost) string {
-	details := make([]string, 0, len(hosts))
+	var (
+		details = make([]string, 0, len(hosts))
+		id      string
+	)
 	for _, host := range hosts {
-		details = append(details, fmt.Sprintf(`host %s created at %s`, host.Pool.Address, host.CreatedAt))
+		if len(host.Container) > 0 {
+			id = host.Container[:12]
+		} else {
+			id = "*crashed*"
+		}
+		details = append(details, fmt.Sprintf("`%s`@%s created at %s", id, host.Pool.Address, host.CreatedAt))
 	}
 
 	return strings.Join(details, "\n")
