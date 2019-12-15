@@ -52,3 +52,11 @@ func (r *VirtualHostRepository) Add(pool *domain.Pool, client *domain.Client) (*
 func (r *VirtualHostRepository) Update(host *domain.VirtualHost) error {
 	return r.db.Update(host)
 }
+
+func (r *VirtualHostRepository) GetByContainerId(containerId string) (*domain.VirtualHost, error) {
+	var host = &domain.VirtualHost{
+		Container: containerId,
+	}
+
+	return host, r.db.Select(host)
+}

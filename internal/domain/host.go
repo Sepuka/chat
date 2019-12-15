@@ -10,6 +10,7 @@ type VirtualHostRepository interface {
 	GetUsersHosts(*Client) ([]*VirtualHost, error)
 	Add(*Pool, *Client) (*VirtualHost, error)
 	Update(host *VirtualHost) error
+	GetByContainerId(string) (*VirtualHost, error)
 }
 
 type VirtualHost struct {

@@ -59,7 +59,7 @@ func (hosting *Telegram) Listen() error {
 			result, err = f.Exec(req)
 			var answer string
 			if err != nil {
-				answer = err.Error()
+				answer = fmt.Sprintf(`error: %s`, err.Error())
 			} else {
 				answer = fmt.Sprintf(`command result: %s`, result.Response)
 			}

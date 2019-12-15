@@ -27,3 +27,8 @@ func (c *Client) IsLimitExceeded(actual int) bool {
 
 	return int(c.Properties.HostsLimit) <= actual
 }
+
+func (c *Client) IsTheSameUser(client *Client) bool {
+	return c.Login == client.Login &&
+		c.Source == client.Source
+}

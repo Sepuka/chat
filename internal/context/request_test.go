@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/sepuka/chat/internal/context"
 	"github.com/sepuka/chat/internal/domain"
 )
 
@@ -25,6 +24,6 @@ func TestTooLongCommandsAreDisabled(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.expected, context.NewRequest(`login`, domain.Manual, testCase.command).GetCommand())
+		assert.Equal(t, testCase.expected, NewRequest(`login`, domain.Manual, testCase.command).GetCommand())
 	}
 }
