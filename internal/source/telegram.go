@@ -2,6 +2,7 @@ package source
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/context"
@@ -30,6 +31,10 @@ func NewTelegram(
 }
 
 func (hosting *Telegram) Listen() error {
+	var (
+		splitedCmd []string
+		req        *context.Request
+	)
 	hosting.logger.Infof(`authorized on account "%s"`, hosting.bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
@@ -42,7 +47,14 @@ func (hosting *Telegram) Listen() error {
 			continue
 		}
 
-		req := context.NewRequest(update.Message.From.UserName, domain.Telegram, update.Message.Text)
+		splitedCmd = strings.Split(update.Message.Text, ` `)
+		switch len(splitedCmd) {
+		case 0, 1:
+			req = context.NewRequest(update.Message.From.UserName, domain.Telegram, update.Message.Text)
+		default:
+			req = context.NewRequest(update.Message.From.UserName, domain.Telegram, splitedCmd[0], splitedCmd[1:]...)
+		}
+
 		hosting.logger.
 			Info(
 				`got telegram command`,
