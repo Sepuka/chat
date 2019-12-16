@@ -54,9 +54,14 @@ func (r *VirtualHostRepository) Update(host *domain.VirtualHost) error {
 }
 
 func (r *VirtualHostRepository) GetByContainerId(containerId string) (*domain.VirtualHost, error) {
-	var host = &domain.VirtualHost{
-		Container: containerId,
-	}
+	var host = &domain.VirtualHost{}
 
-	return host, r.db.Select(host)
+	return host, r.
+		db.
+		Model(host).
+		Where(`container = ?`, containerId).
+		Column(`virtual_host.*`).
+		Relation(`Pool`).
+		Relation(`Client`).
+		Select()
 }
