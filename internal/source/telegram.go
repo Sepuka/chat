@@ -65,8 +65,8 @@ func (hosting *Telegram) Listen() error {
 
 		var result *command.Result
 		var err error
-		if f, ok := hosting.commands[update.Message.Text]; ok {
-			hosting.sendAnswer(update.Message, fmt.Sprintf(`command '%s' accepted`, update.Message.Text))
+		if f, ok := hosting.commands[req.GetCommand()]; ok {
+			hosting.sendAnswer(update.Message, fmt.Sprintf(`command '%s' accepted`, req.GetCommand()))
 
 			result, err = f.Exec(req)
 			var answer string
