@@ -105,7 +105,7 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		return result, err
 	} else {
 		host.Container = string(bytes.Trim(answer, "\n"))
-		if err = c.hostRepo.Update(host); err != nil {
+		if err = c.hostRepo.Update(trx, host); err != nil {
 			c.logger.Errorf(`error while updating virtual host %d: %s`, host.Id, err)
 			if rejectErr := c.rejectHost(trx); rejectErr != nil {
 				c.logger.Errorf(`unable to reject new virtual host in pool %d for user %d: %s`, pool.Id, client.Id, err)
@@ -126,24 +126,24 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 func (c *Create) FindPool(client *domain.Client) (*domain.Pool, *domain.VirtualHost, *pg.Tx, error) {
 	var (
 		pool *domain.Pool
-		trx  *pg.Tx
+		tx   *pg.Tx
 		err  error
 		host *domain.VirtualHost
 	)
 
-	if pool, trx, err = c.poolRepo.OccupyVacant(); err != nil {
+	if pool, tx, err = c.poolRepo.OccupyVacant(); err != nil {
 		if err == pg.ErrNoRows {
 			c.logger.Error(`unable to find any vacant pool: `, err)
 			return nil, nil, nil, FreePoolAreAbsent
 		}
 	}
 
-	if host, err = c.hostRepo.Add(pool, client); err != nil {
+	if host, err = c.hostRepo.Add(tx, pool, client); err != nil {
 		c.logger.Error(`unable to add new virtual host: `, err)
 		return nil, nil, nil, err
 	}
 
-	return pool, host, trx, err
+	return pool, host, tx, err
 }
 
 func (c *Create) rejectHost(trx *pg.Tx) error {

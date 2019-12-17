@@ -8,8 +8,8 @@ import (
 
 type VirtualHostRepository interface {
 	GetUsersHosts(*Client) ([]*VirtualHost, error)
-	Add(*Pool, *Client) (*VirtualHost, error)
-	Update(host *VirtualHost) error
+	Add(*pg.Tx, *Pool, *Client) (*VirtualHost, error)
+	Update(tx *pg.Tx, host *VirtualHost) error
 	GetByContainerId(string) (*VirtualHost, error)
 }
 

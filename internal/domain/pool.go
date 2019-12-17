@@ -10,6 +10,7 @@ import (
 type PoolRepository interface {
 	OccupyVacant() (*Pool, *pg.Tx, error)
 	Engage(*Pool, *pg.Tx) error
+	Release(*Pool) (*pg.Tx, error)
 }
 
 type Pool struct {
