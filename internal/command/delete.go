@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	cmdDelete = `docker rmi %s`
+	cmdDelete = `docker rm -fv %s`
 )
 
 type Delete struct {
@@ -98,7 +98,7 @@ func (d *Delete) Exec(req *context.Request) (*Result, error) {
 	answer, err := d.cloud.Run(host.Pool, d.buildCommand(host.Container))
 	d.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, host.Pool.Id, answer, client.Id, client.Login, client.Source)
 	if err != nil {
-		d.logger.Errorf("unable to delete virtual host at pool %d: %s\n`%s`", host.Pool.Id, err, answer)
+		d.logger.Errorf("unable to delete virtual host at pool #%d: %s\n%s", host.Pool.Id, err, answer)
 
 		return result, err
 	}
