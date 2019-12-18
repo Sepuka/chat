@@ -1,7 +1,6 @@
 package command
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"time"
@@ -14,7 +13,8 @@ import (
 )
 
 const (
-	cmdCreate = `docker run -d --name %s sepuka/joomla.volatiland`
+	cmdCreate           = `docker run -d --name %s sepuka/joomla.volatiland`
+	containerHashLength = 12
 )
 
 var (
@@ -104,7 +104,7 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 
 		return result, err
 	} else {
-		host.Container = string(bytes.Trim(answer, "\n"))
+		host.Container = string(answer[:containerHashLength])
 		if err = c.hostRepo.Update(trx, host); err != nil {
 			c.logger.Errorf(`error while updating virtual host %d: %s`, host.Id, err)
 			if rejectErr := c.rejectHost(trx); rejectErr != nil {
