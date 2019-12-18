@@ -3,6 +3,7 @@ package command
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/sepuka/chat/internal/view"
@@ -106,7 +107,7 @@ func (d *Delete) Exec(req *context.Request) (*Result, error) {
 }
 
 func (d *Delete) buildCommand(name string) domain.RemoteCmd {
-	return domain.RemoteCmd(fmt.Sprintf(cmdDelete, name))
+	return domain.RemoteCmd(fmt.Sprintf(cmdDelete, strings.TrimSpace(name)))
 }
 
 func (d *Delete) release(tx *pg.Tx, pool *domain.Pool, host *domain.VirtualHost) error {
