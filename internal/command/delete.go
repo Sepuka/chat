@@ -1,8 +1,11 @@
 package command
 
 import (
+	"bytes"
 	"fmt"
 	"time"
+
+	"github.com/sepuka/chat/internal/view"
 
 	"github.com/go-pg/pg"
 	"github.com/sepuka/chat/internal/context"
@@ -74,7 +77,14 @@ func (d *Delete) Exec(req *context.Request) (*Result, error) {
 	host, err = d.hostsRepo.GetByContainerId(req.GetArgs()[0])
 	if err != nil {
 		if err == pg.ErrNoRows {
-			result.Response = []byte(`host with specified hash does not exist`)
+			var hosts []*domain.VirtualHost
+			var availableContainers *bytes.Buffer
+			if hosts, err = d.hostsRepo.GetUsersHosts(client); err != nil {
+				return result, err
+			}
+
+			availableContainers = bytes.NewBufferString("Bellow available host hashes:\n" + view.NewContainersListFormatter(hosts).Format())
+			result.Response = availableContainers.Bytes()
 			return result, nil
 		}
 		return result, err

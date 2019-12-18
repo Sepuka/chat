@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 
-	"github.com/sepuka/chat/internal/format"
+	"github.com/sepuka/chat/internal/view"
 
 	"github.com/go-pg/pg"
 
@@ -76,7 +76,7 @@ func (l *Info) Exec(req *context.Request) (*Result, error) {
 		return nil, NoHostsByContainerId
 	}
 
-	formatter := format.NewInfoFormatter(host)
+	formatter := view.NewInfoFormatter(host)
 	result.Response = formatter.Format()
 
 	return result, nil

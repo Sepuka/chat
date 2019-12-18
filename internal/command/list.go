@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 
-	"github.com/sepuka/chat/internal/format"
+	"github.com/sepuka/chat/internal/view"
 
 	"go.uber.org/zap"
 
@@ -32,7 +32,7 @@ func NewList(
 
 func (l *List) Exec(req *context.Request) (*Result, error) {
 	var (
-		formatter = format.NewShortHostsListFormatter(req.GetSource())
+		formatter = view.NewShortHostsListFormatter(req.GetSource())
 	)
 	client, err := l.getClient(req.GetLogin())
 	if err != nil {
