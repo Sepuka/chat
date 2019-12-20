@@ -41,16 +41,15 @@ func (r *VirtualHostRepository) Add(tx *pg.Tx, pool *domain.Pool, client *domain
 	var host = &domain.VirtualHost{
 		PoolId:    pool.Id,
 		ClientId:  client.Id,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		DeletedAt: pg.NullTime{},
+		CreatedAt: pg.NullTime{Time: time.Now()},
+		UpdatedAt: pg.NullTime{Time: time.Now()},
 	}
 
 	return host, tx.Insert(host)
 }
 
 func (r *VirtualHostRepository) Update(tx *pg.Tx, host *domain.VirtualHost) error {
-	host.UpdatedAt = time.Now()
+	host.UpdatedAt = pg.NullTime{Time: time.Now()}
 
 	return tx.Update(host)
 }

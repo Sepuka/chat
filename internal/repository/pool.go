@@ -42,7 +42,7 @@ func (r *PoolRepository) OccupyVacant() (*domain.Pool, *pg.Tx, error) {
 
 func (r *PoolRepository) Engage(pool *domain.Pool, trx *pg.Tx) error {
 	pool.Workload++
-	pool.UpdatedAt = time.Now()
+	pool.UpdatedAt = pg.NullTime{Time: time.Now()}
 	updateError := r.db.Update(pool)
 	if updateError != nil {
 		if trxError := trx.Rollback(); trxError != nil {
@@ -66,7 +66,7 @@ func (r *PoolRepository) Release(pool *domain.Pool) (*pg.Tx, error) {
 	}
 
 	pool.Workload--
-	pool.UpdatedAt = time.Now()
+	pool.UpdatedAt = pg.NullTime{Time: time.Now()}
 
 	return tx, tx.Update(pool)
 }

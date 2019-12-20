@@ -2,9 +2,9 @@ package command
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/sepuka/chat/internal/view"
 
@@ -103,30 +103,44 @@ func (d *Delete) Exec(req *context.Request) (*Result, error) {
 		return result, err
 	}
 
-	return result, d.release(tx, host.Pool, host)
+	if tx, err = d.release(host.Pool, host); err != nil {
+		d.logger.Errorf(`error while rollback release host #%d at pool #%d: %s`, host.Id, host.Pool.Id, err)
+		if err = tx.Rollback(); err != nil {
+			d.logger.Errorf(`error while rollback delete host #%d at pool #%d: %s`, host.Id, host.Pool.Id, err)
+		}
+		return result, errors.New(`cannot delete host`)
+	}
+
+	if err = tx.Commit(); err != nil {
+		d.logger.Errorf(`error while commit deleting host #%d at pool #%d: %s`, host.Id, host.Pool.Id, err)
+		return result, errors.New(`cannot delete host`)
+	}
+
+	result.Response = []byte(`host was deleted`)
+
+	return result, nil
 }
 
 func (d *Delete) buildCommand(name string) domain.RemoteCmd {
 	return domain.RemoteCmd(fmt.Sprintf(cmdDelete, strings.TrimSpace(name)))
 }
 
-func (d *Delete) release(tx *pg.Tx, pool *domain.Pool, host *domain.VirtualHost) error {
+func (d *Delete) release(pool *domain.Pool, host *domain.VirtualHost) (*pg.Tx, error) {
 	var (
 		err error
+		tx  *pg.Tx
 	)
 	tx, err = d.poolRepo.Release(pool)
 	if err != nil {
 		d.logger.Errorf(`unable to release the pool: %s`, err)
 
-		return err
+		return nil, err
 	}
 
-	host.DeletedAt = pg.NullTime{Time: time.Now()}
-
-	return d.hostsRepo.Update(tx, host)
+	return tx, tx.Delete(host)
 }
 
-func (c *Delete) Precept() []string {
+func (d *Delete) Precept() []string {
 	return []string{
 		`delete`,
 		`/delete`,
