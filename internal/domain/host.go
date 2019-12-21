@@ -21,4 +21,6 @@ type VirtualHost struct {
 	Container string      `sql:",notnull"`
 	Pool      *Pool       `sql:"fk:id,notnull"`
 	Client    *Client     `sql:"fk:id,notnull"`
+	WebPort   uint16      `sql:",notnull"`
+	SshPort   uint16      `sql:",notnull"`
 }

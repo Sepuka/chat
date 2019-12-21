@@ -21,4 +21,5 @@ type Pool struct {
 	Active    bool        `sql:",notnull,default:false"`
 	Workload  uint64      `sql:",notnull,default:0"`
 	Secret    string      `sql:",notnull"`
+	PortCnt   uint16      `sql:",notnull,default:8000"`
 }

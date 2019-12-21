@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	cmdCreate           = `docker run -d --name %s sepuka/joomla.volatiland`
+	cmdCreate           = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/joomla.volatiland`
 	containerHashLength = 12
 )
 
@@ -93,7 +93,9 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		return result, err
 	}
 
-	answer, err := c.cloud.Run(pool, c.buildCommand(container))
+	c.buildPorts(pool, host)
+
+	answer, err := c.cloud.Run(pool, c.buildCommand(container, host.WebPort, host.SshPort))
 	c.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, pool.Id, answer, client.Id, client.Login, client.Source)
 
 	if err != nil {
@@ -157,6 +159,13 @@ func (c *Create) Precept() []string {
 	}
 }
 
-func (c *Create) buildCommand(name string) domain.RemoteCmd {
-	return domain.RemoteCmd(fmt.Sprintf(cmdCreate, name))
+func (c *Create) buildCommand(name string, webPort uint16, sshPort uint16) domain.RemoteCmd {
+	return domain.RemoteCmd(fmt.Sprintf(cmdCreate, name, webPort, sshPort))
+}
+
+func (c *Create) buildPorts(pool *domain.Pool, host *domain.VirtualHost) {
+	host.WebPort = pool.PortCnt + 1
+	host.SshPort = pool.PortCnt + 2
+	pool.PortCnt += 2
+	pool.Workload++
 }
