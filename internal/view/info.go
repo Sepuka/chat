@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	infoFormat = "#%d\t%s\tcreated at %s"
+	infoFormat = "id %s\tcreated at %s\nweb port %d\nssh port %d"
 )
 
 type InfoFormatter struct {
@@ -22,5 +22,9 @@ func NewInfoFormatter(host *domain.VirtualHost) *InfoFormatter {
 }
 
 func (f *InfoFormatter) Format() []byte {
-	return []byte(fmt.Sprintf(infoFormat, f.host.Id, f.host.Container, f.host.CreatedAt.Format(time.RFC822)))
+	return []byte(
+		fmt.Sprintf(
+			infoFormat, f.host.Container, f.host.CreatedAt.Format(time.RFC822), f.host.WebPort, f.host.SshPort,
+		),
+	)
 }
