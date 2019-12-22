@@ -73,7 +73,7 @@ func (hosting *Telegram) Listen() error {
 			if err != nil {
 				answer = fmt.Sprintf(`error: %s`, err.Error())
 			} else {
-				answer = fmt.Sprintf(`command result: %s`, result.Response)
+				answer = string(result.Response)
 			}
 			hosting.sendAnswer(update.Message, answer)
 		} else {

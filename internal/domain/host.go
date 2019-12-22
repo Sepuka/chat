@@ -23,4 +23,5 @@ type VirtualHost struct {
 	Client    *Client     `sql:"fk:id,notnull"`
 	WebPort   uint16      `sql:",notnull"`
 	SshPort   uint16      `sql:",notnull"`
+	Alias     string      `pg:"type:varchar(255)"`
 }
