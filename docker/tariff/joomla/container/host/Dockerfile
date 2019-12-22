@@ -8,6 +8,7 @@ RUN apt-get update \
     sudo \
     unzip \
     php7.2-fpm \
+    php7.2-xml \
     openssh-server
 
 RUN apt-get install -y mysql-server

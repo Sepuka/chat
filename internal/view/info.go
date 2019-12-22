@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	infoFormat = "%s%s\tcreated at %s\nweb\t%s:%d\nssh\t%s:%d"
+	infoFormat = "%s%s\tcreated at %s\nweb http://%s:%d\nssh -p %d root@%s"
 )
 
 type InfoFormatter struct {
@@ -38,8 +38,8 @@ func (f *InfoFormatter) Format() []byte {
 			f.host.CreatedAt.Format(time.RFC822),
 			f.host.Pool.Address,
 			f.host.WebPort,
-			f.host.Pool.Address,
 			f.host.SshPort,
+			f.host.Pool.Address,
 		),
 	)
 }
