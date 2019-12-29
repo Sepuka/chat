@@ -10,11 +10,16 @@ RUN apt-get update \
     unzip \
     php7.2-fpm \
     php7.2-xml \
+    php7.2-mysql \
     openssh-server
 
 RUN apt-get install -y mysql-server
 RUN apt-get install -y nginx
+
 ADD mysqld.conf /etc/mysql/my.cnf
+ADD init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
+RUN chown -R mysql:mysql /var/lib/mysql
 
 COPY joomla.nginx.conf /etc/nginx/sites-available/default
 
@@ -26,7 +31,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 COPY Joomla_3.9.14-Stable-Full_Package.zip /var/www/joomla.zip
 RUN unzip -qq /var/www/joomla.zip -d /var/www/joomla
 RUN rm -rf /var/www/joomla.zip
-RUN chown -R mysql:mysql /var/lib/mysql
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD tail -f /dev/null

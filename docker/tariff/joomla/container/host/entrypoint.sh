@@ -9,7 +9,9 @@ printf "\n\033[0;44m--->  root passwd $randompasswd .\033[0m\n"
 echo "root:secret" | chpasswd
 printf "\n\033[0;44m---> Starting the mysql server.\033[0m\n"
 
+usermod -d /var/lib/mysql/ mysql
 service mysql start
+/usr/local/bin/init.sh && rm /usr/local/bin/init.sh
 
 printf "\n\033[0;44m---> Starting the nginx server.\033[0m\n"
 
