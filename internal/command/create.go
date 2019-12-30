@@ -1,8 +1,10 @@
 package command
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-pg/pg"
@@ -13,13 +15,21 @@ import (
 )
 
 const (
-	cmdCreate           = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/joomla.volatiland`
-	containerHashLength = 12
+	cmdCreateJoomla        = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/joomla.volatiland`
+	cmdCreateEmpty         = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/empty.volatiland`
+	containerHashLength    = 12
+	containerPostfixFormat = `20060102150405`
+	imageJoomla            = `joomla`
+	imageEmpty             = ``
 )
 
 var (
-	FreePoolAreAbsent  = errors.New(`free pools are absent`)
-	HostsLimitExceeded = errors.New(`hosts limit exceeded`)
+	FreePoolAreAbsent        = errors.New(`free pools are absent`)
+	HostsLimitExceeded       = errors.New(`hosts limit exceeded`)
+	cannotBuildContainerName = errors.New(`unknown image name`)
+	availableImages          = []string{
+		imageEmpty,
+	}
 )
 
 type Create struct {
@@ -57,7 +67,7 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		result = &Result{
 			Response: []byte(`internal error`),
 		}
-		container string
+		remoteCmd domain.RemoteCmd
 	)
 
 	client, err = c.clientRepo.GetByLogin(req.GetLogin())
@@ -84,7 +94,6 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		return result, HostsLimitExceeded
 	}
 
-	container = fmt.Sprintf(`%s_%d_%s`, client.Login, client.Source, time.Now().Format("20060102150405"))
 	pool, host, trx, err = c.FindPool(client)
 	if err != nil {
 		c.logger.Errorf(`unable to find any free pool: %s`, err)
@@ -95,7 +104,13 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 
 	c.buildPorts(pool, host)
 
-	answer, err := c.cloud.Run(pool, c.buildCommand(container, host.WebPort, host.SshPort))
+	if remoteCmd, err = c.buildCommand(req, client, host.WebPort, host.SshPort); err != nil {
+		result.Response = c.getAvailableImages()
+
+		return result, nil
+	}
+
+	answer, err := c.cloud.Run(pool, remoteCmd)
 	c.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, pool.Id, answer, client.Id, client.Login, client.Source)
 
 	if err != nil {
@@ -159,8 +174,19 @@ func (c *Create) Precept() []string {
 	}
 }
 
-func (c *Create) buildCommand(name string, webPort uint16, sshPort uint16) domain.RemoteCmd {
-	return domain.RemoteCmd(fmt.Sprintf(cmdCreate, name, webPort, sshPort))
+func (c *Create) buildCommand(req *context.Request, client *domain.Client, webPort uint16, sshPort uint16) (domain.RemoteCmd, error) {
+	var (
+		container = fmt.Sprintf(`%s_%d_%s`, client.Login, client.Source, time.Now().Format(containerPostfixFormat))
+	)
+
+	switch req.GetArgs()[0] {
+	case imageEmpty:
+		return domain.RemoteCmd(fmt.Sprintf(cmdCreateEmpty, container, webPort, sshPort)), nil
+	case imageJoomla:
+		return domain.RemoteCmd(fmt.Sprintf(cmdCreateJoomla, container, webPort, sshPort)), nil
+	default:
+		return ``, cannotBuildContainerName
+	}
 }
 
 func (c *Create) buildPorts(pool *domain.Pool, host *domain.VirtualHost) {
@@ -168,4 +194,10 @@ func (c *Create) buildPorts(pool *domain.Pool, host *domain.VirtualHost) {
 	host.SshPort = pool.PortCnt + 2
 	pool.PortCnt += 2
 	pool.Workload++
+}
+
+func (c *Create) getAvailableImages() []byte {
+	return bytes.NewBufferString(
+		fmt.Sprintf(`available images are: %s`, strings.Join(availableImages, `,`)),
+	).Bytes()
 }
