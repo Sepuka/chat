@@ -110,6 +110,9 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 	c.buildPorts(pool, host)
 
 	if remoteCmd, err = c.buildCommand(req, client, host.WebPort, host.SshPort); err != nil {
+		if rejectErr := c.rejectHost(trx); rejectErr != nil {
+			c.logger.Errorf(`unable to reject trx after building remote command for user %d: %s`, client.Id, err)
+		}
 		result.Response = c.getAvailableImages()
 
 		return result, nil
