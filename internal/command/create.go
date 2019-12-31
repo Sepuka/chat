@@ -28,7 +28,7 @@ var (
 	HostsLimitExceeded       = errors.New(`hosts limit exceeded`)
 	cannotBuildContainerName = errors.New(`unknown image name`)
 	availableImages          = []string{
-		imageEmpty,
+		imageJoomla,
 	}
 )
 
@@ -97,6 +97,11 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 	pool, host, trx, err = c.FindPool(client)
 	if err != nil {
 		c.logger.Errorf(`unable to find any free pool: %s`, err)
+		if trx != nil {
+			if rejectErr := c.rejectHost(trx); rejectErr != nil {
+				c.logger.Errorf(`unable to reject trx after finding vacant pool for user %d: %s`, client.Id, err)
+			}
+		}
 		result.Response = []byte(`no free pool`)
 
 		return result, err
