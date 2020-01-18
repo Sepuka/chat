@@ -3,6 +3,8 @@ package source
 import (
 	"errors"
 
+	"github.com/sepuka/chat/internal/middleware"
+
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/context"
 	"github.com/sepuka/chat/internal/domain"
@@ -13,23 +15,33 @@ var (
 )
 
 type Terminal struct {
-	commands   map[string]command.Executor
+	commands   command.HandlerMap
 	clientRepo domain.ClientRepository
+	handler    middleware.HandlerFunc
 }
 
 func NewTerminal(
 	commandsMap command.HandlerMap,
 	clientRepo domain.ClientRepository,
+	handler middleware.HandlerFunc,
 ) *Terminal {
 	return &Terminal{
 		commands:   commandsMap,
 		clientRepo: clientRepo,
+		handler:    handler,
 	}
 }
 
 func (src *Terminal) Execute(req *context.Request) (*command.Result, error) {
-	if f, ok := src.commands[req.GetCommand()]; ok {
-		return f.Exec(req)
+	if finalHandler, ok := src.commands[req.GetCommand()]; ok {
+		var (
+			resp = &command.Result{}
+			err  error
+		)
+
+		src.handler(finalHandler, req, resp, err)
+
+		return resp, err
 	}
 
 	return nil, unknownInstruction

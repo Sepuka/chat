@@ -6,8 +6,10 @@ import (
 	"github.com/sepuka/chat/internal/config"
 	"github.com/sepuka/chat/internal/def"
 	commandDef "github.com/sepuka/chat/internal/def/command"
+	middlewareDef "github.com/sepuka/chat/internal/def/middleware"
 	"github.com/sepuka/chat/internal/def/repository"
 	"github.com/sepuka/chat/internal/domain"
+	middleware3 "github.com/sepuka/chat/internal/middleware"
 	"github.com/sepuka/chat/internal/source"
 )
 
@@ -21,13 +23,12 @@ func init() {
 			Name: TerminalDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					handlerMap command.HandlerMap
+					handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
 					clientRepo = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
+					handler    = ctx.Get(middlewareDef.TerminalMiddlewareDef).(middleware3.HandlerFunc)
 				)
 
-				handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
-
-				return source.NewTerminal(handlerMap, clientRepo), nil
+				return source.NewTerminal(handlerMap, clientRepo, handler), nil
 			},
 		})
 	})

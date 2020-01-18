@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/sepuka/chat/internal/def/middleware"
+	middleware2 "github.com/sepuka/chat/internal/middleware"
+
 	commandDef "github.com/sepuka/chat/internal/def/command"
 
 	"github.com/sepuka/chat/internal/config"
@@ -53,12 +56,11 @@ func init() {
 				var (
 					logger     = def.Container.Get(log.LoggerDef).(*zap.SugaredLogger)
 					bot        = ctx.Get(BotDef).(*tgbotapi.BotAPI)
-					handlerMap command.HandlerMap
+					handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
+					handler    = ctx.Get(middleware.TelegramMiddlewareDef).(middleware2.HandlerFunc)
 				)
 
-				handlerMap = ctx.Get(commandDef.HandlerMapDef).(command.HandlerMap)
-
-				return source.NewTelegram(handlerMap, bot, logger), nil
+				return source.NewTelegram(handlerMap, bot, logger, handler), nil
 			},
 		})
 	})

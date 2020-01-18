@@ -12,7 +12,7 @@ type Result struct {
 }
 
 type Executor interface {
-	Exec(*context.Request) (*Result, error)
+	Exec(*context.Request, *Result) error
 }
 
 type Preceptable interface {

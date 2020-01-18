@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/sepuka/chat/internal/middleware"
+
 	"github.com/sepuka/chat/internal/command"
 	"github.com/sepuka/chat/internal/context"
 	"github.com/sepuka/chat/internal/domain"
@@ -16,17 +18,20 @@ type Telegram struct {
 	commands command.HandlerMap
 	bot      *tgbotapi.BotAPI
 	logger   *zap.SugaredLogger
+	handler  middleware.HandlerFunc
 }
 
 func NewTelegram(
 	commandsMap command.HandlerMap,
 	bot *tgbotapi.BotAPI,
 	logger *zap.SugaredLogger,
+	handler middleware.HandlerFunc,
 ) *Telegram {
 	return &Telegram{
 		commands: commandsMap,
 		bot:      bot,
 		logger:   logger,
+		handler:  handler,
 	}
 }
 
@@ -63,18 +68,22 @@ func (hosting *Telegram) Listen() error {
 				zap.Strings(`args`, req.GetArgs()),
 			)
 
-		var result *command.Result
-		var err error
-		if f, ok := hosting.commands[req.GetCommand()]; ok {
+		if finalHandler, ok := hosting.commands[req.GetCommand()]; ok {
 			hosting.sendAnswer(update.Message, fmt.Sprintf(`command '%s' accepted`, req.GetCommand()))
 
-			result, err = f.Exec(req)
-			var answer string
+			var (
+				resp   *command.Result
+				err    error
+				answer string
+			)
+			hosting.handler(finalHandler, req, resp, err)
+
 			if err != nil {
 				answer = fmt.Sprintf(`error: %s`, err.Error())
 			} else {
-				answer = string(result.Response)
+				answer = string(resp.Response)
 			}
+
 			hosting.sendAnswer(update.Message, answer)
 		} else {
 			hosting.sendAnswer(update.Message, `unknown command`)

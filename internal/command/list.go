@@ -30,13 +30,13 @@ func NewList(
 	}
 }
 
-func (l *List) Exec(req *context.Request) (*Result, error) {
+func (l *List) Exec(req *context.Request, resp *Result) error {
 	var (
 		formatter = view.NewShortHostsListFormatter(req.GetSource())
 	)
 	client, err := l.getClient(req.GetLogin())
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if client != nil {
 		hosts, err := l.hostsRepo.GetUsersHosts(client)
@@ -48,17 +48,17 @@ func (l *List) Exec(req *context.Request) (*Result, error) {
 				zap.String(`command`, req.GetCommand()),
 				zap.Strings(`args`, req.GetArgs()),
 			)
-			return nil, errors.New(`some error occurred`)
+			return errors.New(`some error occurred`)
 		}
 
-		return &Result{
-			Response: []byte(formatter.Format(hosts)),
-		}, nil
+		resp.Response = []byte(formatter.Format(hosts))
+
+		return nil
 	}
 
-	return &Result{
-		Response: []byte(`you're have not any hosts`),
-	}, nil
+	resp.Response = []byte(`you're have not any hosts`)
+
+	return nil
 }
 
 func (l *List) Precept() []string {

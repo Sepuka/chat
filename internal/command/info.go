@@ -36,50 +36,48 @@ func NewInfo(
 	}
 }
 
-func (l *Info) Exec(req *context.Request) (*Result, error) {
+func (l *Info) Exec(req *context.Request, resp *Result) error {
 	var (
 		argsNum = len(req.GetArgs())
 		err     error
 		client  *domain.Client
 		host    *domain.VirtualHost
-		result  = &Result{
-			Response: []byte(`internal error`),
-		}
 	)
 
+	resp.Response = []byte(`internal error`)
 	if argsNum != 1 {
-		return nil, NoContainerIdError
+		return NoContainerIdError
 	}
 
 	if len(req.GetArgs()[0]) != 12 && len(req.GetArgs()[0]) != 64 {
-		return nil, WrongContainerIdFormat
+		return WrongContainerIdFormat
 	}
 
 	client, err = l.clientRepo.GetByLogin(req.GetLogin())
 	if err != nil {
 		if err == pg.ErrNoRows {
-			result.Response = []byte(`you have not any hosts`)
-			return result, nil
+			resp.Response = []byte(`you have not any hosts`)
+			return nil
 		}
-		return result, err
+		return err
 	}
 
 	host, err = l.hostsRepo.GetByContainerId(req.GetArgs()[0])
 	if err != nil {
 		if err == pg.ErrNoRows {
-			return nil, NoHostsByContainerId
+			return NoHostsByContainerId
 		}
-		return result, err
+		return err
 	}
 
 	if !host.Client.IsTheSameUser(client) {
-		return nil, NoHostsByContainerId
+		return NoHostsByContainerId
 	}
 
 	formatter := view.NewInfoFormatter(host)
-	result.Response = formatter.Format()
+	resp.Response = formatter.Format()
 
-	return result, nil
+	return nil
 }
 
 func (l *Info) Precept() []string {

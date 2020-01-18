@@ -56,42 +56,41 @@ func NewCreate(
 	}
 }
 
-func (c *Create) Exec(req *context.Request) (*Result, error) {
+func (c *Create) Exec(req *context.Request, resp *Result) error {
 	var (
-		pool   *domain.Pool
-		client *domain.Client
-		trx    *pg.Tx
-		hosts  []*domain.VirtualHost
-		host   *domain.VirtualHost
-		err    error
-		result = &Result{
-			Response: []byte(`internal error`),
-		}
+		pool      *domain.Pool
+		client    *domain.Client
+		trx       *pg.Tx
+		hosts     []*domain.VirtualHost
+		host      *domain.VirtualHost
+		err       error
 		remoteCmd domain.RemoteCmd
 	)
+
+	resp.Response = []byte(`internal error`)
 
 	client, err = c.clientRepo.GetByLogin(req.GetLogin())
 	if err != nil {
 		if err == pg.ErrNoRows {
 			if clientErr := c.clientRepo.Add(req.GetLogin(), req.GetSource()); clientErr != nil {
 				c.logger.Errorf(`unable to create new client %s`, req.GetFQDN())
-				result.Response = []byte(`unable to register new client`)
+				resp.Response = []byte(`unable to register new client`)
 
-				return result, err
+				return err
 			}
 		} else {
 			c.logger.Errorf(`client %s not found: %s`, req.GetFQDN(), err)
 
-			return result, err
+			return err
 		}
 	}
 
 	if hosts, err = c.hostRepo.GetUsersHosts(client); err != nil {
 		c.logger.Errorf(`cannot check exists client's hosts: %s`, err)
-		return result, HostsLimitExceeded
+		return HostsLimitExceeded
 	}
 	if client.IsLimitExceeded(len(hosts)) {
-		return result, HostsLimitExceeded
+		return HostsLimitExceeded
 	}
 
 	pool, host, trx, err = c.FindPool(client)
@@ -102,9 +101,9 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 				c.logger.Errorf(`unable to reject trx after finding vacant pool for user %d: %s`, client.Id, err)
 			}
 		}
-		result.Response = []byte(`no free pool`)
+		resp.Response = []byte(`no free pool`)
 
-		return result, err
+		return err
 	}
 
 	c.buildPorts(pool, host)
@@ -113,9 +112,9 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 		if rejectErr := c.rejectHost(trx); rejectErr != nil {
 			c.logger.Errorf(`unable to reject trx after building remote command for user %d: %s`, client.Id, err)
 		}
-		result.Response = c.getAvailableImages()
+		resp.Response = c.getAvailableImages()
 
-		return result, nil
+		return nil
 	}
 
 	answer, err := c.cloud.Run(pool, remoteCmd)
@@ -127,7 +126,7 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 			c.logger.Errorf(`unable to reject new virtual host in pool %d for user %d: %s`, pool.Id, client.Id, err)
 		}
 
-		return result, err
+		return err
 	} else {
 		host.Container = string(answer[:containerHashLength])
 		if err = c.hostRepo.Update(trx, host); err != nil {
@@ -135,17 +134,17 @@ func (c *Create) Exec(req *context.Request) (*Result, error) {
 			if rejectErr := c.rejectHost(trx); rejectErr != nil {
 				c.logger.Errorf(`unable to reject new virtual host in pool %d for user %d: %s`, pool.Id, client.Id, err)
 			}
-			return result, err
+			return err
 		}
 		if err = c.poolRepo.Engage(pool, trx); err != nil {
 			c.logger.Errorf(`cannot engage new virtual host %s`, err)
-			return result, err
+			return err
 		}
 	}
 
-	result.Response = []byte(`your new virtual host just created`)
+	resp.Response = []byte(`your new virtual host just created`)
 
-	return result, nil
+	return nil
 }
 
 func (c *Create) FindPool(client *domain.Client) (*domain.Pool, *domain.VirtualHost, *pg.Tx, error) {
