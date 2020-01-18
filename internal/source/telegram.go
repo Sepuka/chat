@@ -72,7 +72,7 @@ func (hosting *Telegram) Listen() error {
 			hosting.sendAnswer(update.Message, fmt.Sprintf(`command '%s' accepted`, req.GetCommand()))
 
 			var (
-				resp   *command.Result
+				resp   = &command.Result{}
 				err    error
 				answer string
 			)
