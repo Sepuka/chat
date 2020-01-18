@@ -186,9 +186,11 @@ func (c *Create) buildCommand(req *context.Request, client *domain.Client, webPo
 		container = fmt.Sprintf(`%s_%d_%s`, client.Login, client.Source, time.Now().Format(containerPostfixFormat))
 	)
 
-	switch req.GetArgs()[0] {
-	case imageEmpty:
+	if len(req.GetArgs()) == 0 {
 		return domain.RemoteCmd(fmt.Sprintf(cmdCreateEmpty, container, webPort, sshPort)), nil
+	}
+
+	switch req.GetArgs()[0] {
 	case imageJoomla:
 		return domain.RemoteCmd(fmt.Sprintf(cmdCreateJoomla, container, webPort, sshPort)), nil
 	default:
