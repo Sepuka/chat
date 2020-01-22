@@ -30,7 +30,7 @@ func (f *ShortHostsListFormatter) Format(hosts []*domain.VirtualHost) string {
 		result = fmt.Sprintf(`You have %d hosts`, length)
 	}
 
-	return result
+	return fmt.Sprintf("%s\n%s", result, f.tip(hosts[0]))
 }
 
 func (f *ShortHostsListFormatter) extendList(hosts []*domain.VirtualHost) string {
@@ -41,8 +41,12 @@ func (f *ShortHostsListFormatter) extendList(hosts []*domain.VirtualHost) string
 	for _, host := range hosts {
 		id = host.Container[:12]
 		format := host.CreatedAt.Format(time.RFC822)
-		details = append(details, fmt.Sprintf("%s@%s created at %s", id, host.Pool.Address, format))
+		details = append(details, fmt.Sprintf("%s %s created at %s", id, host.Pool.Address, format))
 	}
 
 	return strings.Join(details, "\n")
+}
+
+func (f *ShortHostsListFormatter) tip(host *domain.VirtualHost) string {
+	return fmt.Sprintf("type 'info {HOST_ID}' for host extended information\nfor instance, 'info %s'", host.Container)
 }
