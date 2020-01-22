@@ -121,7 +121,7 @@ func (c *Create) Exec(req *context.Request, resp *Result) error {
 	c.logger.Debugf(`pool #%d returned "%s" for client #%d (%s@%s)`, pool.Id, answer, client.Id, client.Login, client.Source)
 
 	if err != nil {
-		c.logger.Errorf(`unable to create new virtual host: %s`, err)
+		c.logger.Errorf("unable to create new virtual host: %s\nhost answered: %s", err, answer)
 		if rejectErr := c.rejectHost(trx); rejectErr != nil {
 			c.logger.Errorf(`unable to reject new virtual host in pool %d for user %d: %s`, pool.Id, client.Id, err)
 		}
