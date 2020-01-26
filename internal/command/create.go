@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	cmdCreateJoomla        = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/joomla.volatiland`
-	cmdCreateEmpty         = `docker run -d --name %s -p %d:80 -p %d:22 sepuka/empty.volatiland`
+	cmdCreateJoomla        = `docker run -d --name %s -p %d:80 -p %d:22 --storage-opt size=2G sepuka/joomla.volatiland`
+	cmdCreateEmpty         = `docker run -d --name %s -p %d:80 -p %d:22 --storage-opt size=2G sepuka/empty.volatiland`
 	containerHashLength    = 12
 	containerPostfixFormat = `20060102150405`
 	imageJoomla            = `joomla`
