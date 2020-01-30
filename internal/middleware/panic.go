@@ -10,7 +10,9 @@ import (
 )
 
 func Panic(next HandlerFunc) HandlerFunc {
-	return func(exec command.Executor, req *context.Request, res *command.Result, err error) {
+	return func(exec command.Executor, req *context.Request, res *command.Result) error {
+		var err error
+
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Printf("panic: %s\n"+
@@ -21,6 +23,8 @@ func Panic(next HandlerFunc) HandlerFunc {
 			}
 		}()
 
-		next(exec, req, res, err)
+		err = next(exec, req, res)
+
+		return err
 	}
 }

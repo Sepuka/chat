@@ -39,7 +39,7 @@ func (src *Terminal) Execute(req *context.Request) (*command.Result, error) {
 			err  error
 		)
 
-		src.handler(finalHandler, req, resp, err)
+		err = src.handler(finalHandler, req, resp)
 
 		return resp, err
 	}

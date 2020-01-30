@@ -5,10 +5,10 @@ import (
 	"github.com/sepuka/chat/internal/context"
 )
 
-type HandlerFunc func(command.Executor, *context.Request, *command.Result, error)
+type HandlerFunc func(command.Executor, *context.Request, *command.Result) error
 
-func final(handler command.Executor, req *context.Request, resp *command.Result, err error) {
-	err = handler.Exec(req, resp)
+func final(handler command.Executor, req *context.Request, resp *command.Result) error {
+	return handler.Exec(req, resp)
 }
 
 func BuildHandlerChain(handlers []func(HandlerFunc) HandlerFunc) HandlerFunc {

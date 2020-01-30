@@ -76,7 +76,7 @@ func (hosting *Telegram) Listen() error {
 				err    error
 				answer string
 			)
-			hosting.handler(finalHandler, req, resp, err)
+			err = hosting.handler(finalHandler, req, resp)
 
 			if err != nil {
 				answer = fmt.Sprintf(`error: %s`, err.Error())

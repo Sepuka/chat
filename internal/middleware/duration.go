@@ -12,11 +12,13 @@ import (
 )
 
 func Duration(next HandlerFunc) HandlerFunc {
-	return func(exec command.Executor, req *context.Request, res *command.Result, err error) {
+	return func(exec command.Executor, req *context.Request, res *command.Result) error {
 		var start = time.Now()
-		next(exec, req, res, err)
+		var err = next(exec, req, res)
 		var duration = time.Since(start)
 		var log = def.Container.Get(log2.LoggerDef).(*zap.SugaredLogger)
-		log.Infof(`duration %s is %s`, req.GetCommand(), duration.String())
+		log.Infof(`duration '%s' is %s`, req.GetCommand(), duration.String())
+
+		return err
 	}
 }
