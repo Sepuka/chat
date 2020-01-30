@@ -19,20 +19,17 @@ var (
 )
 
 type Info struct {
-	clientRepo domain.ClientRepository
-	hostsRepo  domain.VirtualHostRepository
-	logger     *zap.SugaredLogger
+	hostsRepo domain.VirtualHostRepository
+	logger    *zap.SugaredLogger
 }
 
 func NewInfo(
-	clientRepo domain.ClientRepository,
 	hostsRepo domain.VirtualHostRepository,
 	logger *zap.SugaredLogger,
 ) *Info {
 	return &Info{
-		clientRepo: clientRepo,
-		hostsRepo:  hostsRepo,
-		logger:     logger,
+		hostsRepo: hostsRepo,
+		logger:    logger,
 	}
 }
 
@@ -53,13 +50,10 @@ func (l *Info) Exec(req *context.Request, resp *Result) error {
 		return WrongContainerIdFormat
 	}
 
-	client, err = l.clientRepo.GetByLogin(req.GetLogin())
-	if err != nil {
-		if err == pg.ErrNoRows {
-			resp.Response = []byte(`you have not any hosts`)
-			return nil
-		}
-		return err
+	client = req.GetClient()
+	if client == nil {
+		resp.Response = []byte(`you have not any hosts`)
+		return nil
 	}
 
 	host, err = l.hostsRepo.GetByContainerId(req.GetArgs()[0])

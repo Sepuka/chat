@@ -88,7 +88,7 @@ func TestExecInfo(t *testing.T) {
 		},
 	}
 	var (
-		info = NewInfo(clientRepo, hostsRepo, logger.Sugar())
+		info = NewInfo(hostsRepo, logger.Sugar())
 	)
 
 	for testName, testCase := range testCases {

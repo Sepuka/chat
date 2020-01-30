@@ -4,6 +4,8 @@ import (
 	"github.com/sarulabs/di"
 	"github.com/sepuka/chat/internal/config"
 	"github.com/sepuka/chat/internal/def"
+	"github.com/sepuka/chat/internal/def/repository"
+	"github.com/sepuka/chat/internal/domain"
 	"github.com/sepuka/chat/internal/middleware"
 )
 
@@ -17,9 +19,12 @@ func init() {
 			Name: TelegramMiddlewareDef,
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
+					clientRepo         = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
+					clientMiddleware   = middleware.NewClientMiddleware(clientRepo)
 					terminalMiddleware = []func(handlerFunc middleware.HandlerFunc) middleware.HandlerFunc{
 						middleware.Panic,
 						middleware.Duration,
+						clientMiddleware.ClientHandler,
 					}
 				)
 

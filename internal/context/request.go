@@ -15,10 +15,37 @@ type Request struct {
 	source  domain.ClientSource
 	command string
 	args    []string
+	client  *domain.Client
 }
 
 func NewRequest(
 	login string,
+	source domain.ClientSource,
+	command string,
+	args ...string,
+) *Request {
+	return buildRequest(login,
+		source,
+		command,
+		args...,
+	)
+}
+
+func NewClientRequest(
+	client *domain.Client,
+	command string,
+	args ...string,
+) *Request {
+	if client == nil {
+		return nil
+	}
+	req := buildRequest(client.Login, client.Source, command, args...)
+	req.client = client
+
+	return req
+}
+
+func buildRequest(login string,
 	source domain.ClientSource,
 	command string,
 	args ...string,
@@ -52,4 +79,8 @@ func (r *Request) GetSource() domain.ClientSource {
 
 func (r *Request) GetFQDN() string {
 	return fmt.Sprintf(`%s@%d`, r.login, r.source)
+}
+
+func (r *Request) GetClient() *domain.Client {
+	return r.client
 }

@@ -27,11 +27,10 @@ func init() {
 			},
 			Build: func(ctx def.Context) (interface{}, error) {
 				var (
-					clientRepo = ctx.Get(repository.ClientRepoDef).(domain.ClientRepository)
-					hostsRepo  = ctx.Get(repository.HostRepoDef).(domain.VirtualHostRepository)
-					logger     = ctx.Get(log.LoggerDef).(*zap.SugaredLogger)
+					hostsRepo = ctx.Get(repository.HostRepoDef).(domain.VirtualHostRepository)
+					logger    = ctx.Get(log.LoggerDef).(*zap.SugaredLogger)
 				)
-				return command.NewInfo(clientRepo, hostsRepo, logger), nil
+				return command.NewInfo(hostsRepo, logger), nil
 			},
 		})
 	})
