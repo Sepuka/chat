@@ -19,7 +19,7 @@ func NewClientMiddleware(clientRepo domain.ClientRepository) *Client {
 
 func (h *Client) ClientHandler(next HandlerFunc) HandlerFunc {
 	return func(exec command.Executor, req *context.Request, res *command.Result) error {
-		client, err := h.clientRepo.GetByLogin(req.GetLogin())
+		client, err := h.clientRepo.GetByLogin(req.GetLogin(), req.GetSource())
 		if err != nil {
 			if err != pg.ErrNoRows {
 				return err

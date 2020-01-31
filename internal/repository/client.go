@@ -17,7 +17,7 @@ func NewClientRepository(db *pg.DB) *ClientRepository {
 	return &ClientRepository{db: db}
 }
 
-func (c *ClientRepository) GetByLogin(login string) (*domain.Client, error) {
+func (c *ClientRepository) GetByLogin(login string, source domain.ClientSource) (*domain.Client, error) {
 	var (
 		client = &domain.Client{}
 		err    error
@@ -26,7 +26,7 @@ func (c *ClientRepository) GetByLogin(login string) (*domain.Client, error) {
 		db.
 		Model(client).
 		Relation(`Properties`).
-		Where(`client.login = ?`, login).
+		Where(`client.login = ? AND client.source = ?`, login, source).
 		Select()
 
 	return client, err

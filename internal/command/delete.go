@@ -61,7 +61,7 @@ func (d *Delete) Exec(req *context.Request, resp *Result) error {
 		return WrongContainerIdFormat
 	}
 
-	client, err = d.clientRepo.GetByLogin(req.GetLogin())
+	client, err = d.clientRepo.GetByLogin(req.GetLogin(), req.GetSource())
 	if err != nil {
 		if err == pg.ErrNoRows {
 			resp.Response = []byte(`you have not any hosts`)
@@ -90,7 +90,8 @@ func (d *Delete) Exec(req *context.Request, resp *Result) error {
 	}
 
 	if !host.Client.IsTheSameUser(client) {
-		return NoHostsByContainerId
+		resp.Response = []byte(`hosts with specified container id does not exist`)
+		return nil
 	}
 
 	answer, err := d.cloud.Run(host.Pool, d.buildCommand(host.Container))

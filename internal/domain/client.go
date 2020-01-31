@@ -7,7 +7,7 @@ import (
 )
 
 type ClientRepository interface {
-	GetByLogin(string) (*Client, error)
+	GetByLogin(string, ClientSource) (*Client, error)
 	Add(string, ClientSource) (*Client, error)
 }
 
