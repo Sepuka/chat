@@ -59,7 +59,7 @@ func NewCreate(
 func (c *Create) Exec(req *context.Request, resp *Result) error {
 	var (
 		pool      *domain.Pool
-		client    *domain.Client
+		client    = req.GetClient()
 		trx       *pg.Tx
 		hosts     []*domain.VirtualHost
 		host      *domain.VirtualHost
@@ -69,17 +69,10 @@ func (c *Create) Exec(req *context.Request, resp *Result) error {
 
 	resp.Response = []byte(`internal error`)
 
-	client, err = c.clientRepo.GetByLogin(req.GetLogin())
-	if err != nil {
-		if err == pg.ErrNoRows {
-			if clientErr := c.clientRepo.Add(req.GetLogin(), req.GetSource()); clientErr != nil {
-				c.logger.Errorf(`unable to create new client %s`, req.GetFQDN())
-				resp.Response = []byte(`unable to register new client`)
-
-				return err
-			}
-		} else {
-			c.logger.Errorf(`client %s not found: %s`, req.GetFQDN(), err)
+	if client == nil {
+		if client, err = c.clientRepo.Add(req.GetLogin(), req.GetSource()); err != nil {
+			c.logger.Errorf(`unable to create new client %s`, req.GetFQDN())
+			resp.Response = []byte(`unable to register new client`)
 
 			return err
 		}

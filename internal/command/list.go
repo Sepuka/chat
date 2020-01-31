@@ -7,7 +7,6 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/go-pg/pg"
 	"github.com/sepuka/chat/internal/context"
 	"github.com/sepuka/chat/internal/domain"
 )
@@ -33,30 +32,28 @@ func NewList(
 func (l *List) Exec(req *context.Request, resp *Result) error {
 	var (
 		formatter = view.NewShortHostsListFormatter(req.GetSource())
+		client    = req.GetClient()
 	)
-	client, err := l.getClient(req.GetLogin())
-	if err != nil {
-		return err
-	}
-	if client != nil {
-		hosts, err := l.hostsRepo.GetUsersHosts(client)
-		if err != nil {
-			l.logger.Error(
-				`db error`,
-				zap.Error(err),
-				zap.String(`user`, req.GetLogin()),
-				zap.String(`command`, req.GetCommand()),
-				zap.Strings(`args`, req.GetArgs()),
-			)
-			return errors.New(`some error occurred`)
-		}
 
-		resp.Response = []byte(formatter.Format(hosts))
+	resp.Response = []byte(`you're have not any hosts`)
 
+	if client == nil {
 		return nil
 	}
 
-	resp.Response = []byte(`you're have not any hosts`)
+	hosts, err := l.hostsRepo.GetUsersHosts(client)
+	if err != nil {
+		l.logger.Error(
+			`db error`,
+			zap.Error(err),
+			zap.String(`user`, req.GetLogin()),
+			zap.String(`command`, req.GetCommand()),
+			zap.Strings(`args`, req.GetArgs()),
+		)
+		return errors.New(`some error occurred`)
+	}
+
+	resp.Response = []byte(formatter.Format(hosts))
 
 	return nil
 }
@@ -66,16 +63,4 @@ func (l *List) Precept() []string {
 		`list`,
 		`/list`,
 	}
-}
-
-func (l *List) getClient(login string) (*domain.Client, error) {
-	client, err := l.clientRepo.GetByLogin(login)
-	if err != nil {
-		if err == pg.ErrNoRows {
-			return nil, nil
-		}
-		return nil, err
-	}
-
-	return client, nil
 }

@@ -32,7 +32,7 @@ func (c *ClientRepository) GetByLogin(login string) (*domain.Client, error) {
 	return client, err
 }
 
-func (c *ClientRepository) Add(login string, source domain.ClientSource) error {
+func (c *ClientRepository) Add(login string, source domain.ClientSource) (*domain.Client, error) {
 	var (
 		err    error
 		client = &domain.Client{
@@ -49,25 +49,25 @@ func (c *ClientRepository) Add(login string, source domain.ClientSource) error {
 
 	trx, err := c.db.Begin()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = c.db.Insert(client)
 	if err != nil {
 		if rollbackErr := trx.Rollback(); rollbackErr != nil {
-			return errors.Wrapf(rollbackErr, `cannot rollback transaction after client inserting, error '%s'`, err.Error())
+			return nil, errors.Wrapf(rollbackErr, `cannot rollback transaction after client inserting, error '%s'`, err.Error())
 		}
-		return err
+		return nil, err
 	}
 
 	properties.ClientId = client.Id
 	err = c.db.Insert(properties)
 	if err != nil {
 		if rollbackErr := trx.Rollback(); rollbackErr != nil {
-			return errors.Wrapf(rollbackErr, `cannot rollback transaction after properties inserting, error '%s'`, err.Error())
+			return nil, errors.Wrapf(rollbackErr, `cannot rollback transaction after properties inserting, error '%s'`, err.Error())
 		}
-		return err
+		return nil, err
 	}
 
-	return trx.Commit()
+	return client, trx.Commit()
 }

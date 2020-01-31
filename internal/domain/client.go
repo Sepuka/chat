@@ -8,7 +8,7 @@ import (
 
 type ClientRepository interface {
 	GetByLogin(string) (*Client, error)
-	Add(string, ClientSource) error
+	Add(string, ClientSource) (*Client, error)
 }
 
 type Client struct {
